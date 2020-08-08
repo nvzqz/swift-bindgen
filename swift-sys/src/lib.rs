@@ -4,6 +4,8 @@
 
 #![warn(missing_docs)]
 
+pub mod metadata;
+
 mod opaque;
 
 pub use opaque::*;
