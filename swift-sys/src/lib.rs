@@ -3,3 +3,7 @@
 //! <a href="mailto:hello@nikolaivazquez.com?subject=I want to help with swift-bindgen&body=Hi Nikolai,%0A%0AMy name is YOUR NAME and I want to get involved with swift-bindgen by...">reach out</a>!
 
 #![warn(missing_docs)]
+
+mod opaque;
+
+pub use opaque::*;
