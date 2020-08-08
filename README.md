@@ -14,6 +14,18 @@ If this project is useful to you, please support it by
 [sponsoring on GitHub](https://github.com/sponsors/nvzqz) or
 [donating directly](https://www.paypal.me/nvzqz)!
 
+## Project Structure
+
+This project is composed of the following crates:
+
+- `swift-bindgen`: Generates bindings for two-way bridging of Rust/Swift types.
+
+- `swift`: High-level idiomatic bindings to the Swift standard library.
+
+- `swift-rt`: High-level idiomatic bindings to the Swift runtime.
+
+- `swift-sys`: Low-level bindings to the Swift runtime.
+
 ## License
 
 This project is licensed under the [Apache License (Version 2.0)](https://github.com/rustswift/swift-bindgen/blob/main/LICENSE.txt).
