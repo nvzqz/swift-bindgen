@@ -4,6 +4,10 @@
 
 #![warn(missing_docs)]
 
+pub(crate) mod util;
+
 mod primitive;
+mod ptr;
 
 pub use primitive::*;
+pub use ptr::*;
