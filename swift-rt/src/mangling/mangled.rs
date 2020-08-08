@@ -3,10 +3,19 @@ use std::{
     fmt::{self, Write},
     mem,
     os::raw::c_void,
-    slice,
+    slice, str,
 };
 
 /// A mangled Swift symbol.
+///
+/// # Debug formatting
+///
+/// The `Debug` implementation of this type takes into account relative and
+/// absolute references (delimited by `0x01..=0x17` and `0x18..=0x1F`
+/// respectively) encoded in the symbol.
+///
+/// References are formatted as `<` + `$delim` (hex) + `:` + `$offset` or
+/// `$address` + `>`.
 #[repr(C)]
 pub struct Mangled {
     data: [u8; 0],
@@ -16,13 +25,91 @@ impl fmt::Debug for Mangled {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "\"")?;
 
-        for &byte in self.to_bytes() {
-            for escaped in ascii::escape_default(byte) {
-                f.write_char(escaped as char)?;
+        let mut current = self.as_ptr();
+
+        loop {
+            // SAFETY: `current` always refers to a byte within bounds.
+            let next = unsafe { *current };
+
+            match Component::new(next) {
+                Component::Null => break,
+                Component::SymbolicReference(reference) => {
+                    fn hexify(b: u8) -> u8 {
+                        match b {
+                            0..=9 => b'0' + b,
+                            _ => b'a' + b - 10,
+                        }
+                    }
+
+                    // SAFETY: The string in the form "<XX:" is UTF-8.
+                    let prefix = [b'<', hexify(next >> 4), hexify(next & 0xf), b':'];
+                    let prefix: &str = unsafe { str::from_utf8_unchecked(&prefix) };
+                    f.write_str(prefix)?;
+
+                    match reference {
+                        // SAFETY: A relative symbolic reference delimiter
+                        // ensures that the value following the delimiter is a
+                        // 32-bit integer for the offset.
+                        SymbolicReference::Relative => unsafe {
+                            let offset_ptr = current.add(1).cast::<i32>();
+                            current = offset_ptr.add(1).cast();
+
+                            let offset = offset_ptr.read_unaligned();
+                            write!(f, "{:?}", offset)?;
+                        },
+
+                        // SAFETY: An absolute symbolic reference delimiter
+                        // ensures that the value following the delimiter is a
+                        // pointer.
+                        SymbolicReference::Absolute => unsafe {
+                            let addr_ptr = current.add(1).cast::<*const c_void>();
+                            current = addr_ptr.add(1).cast();
+
+                            let addr = addr_ptr.read_unaligned();
+                            write!(f, "{:?}", addr)?;
+                        },
+                    }
+
+                    f.write_char('>')?;
+                }
+                Component::Normal => {
+                    for escaped in ascii::escape_default(next) {
+                        f.write_char(escaped as char)?;
+                    }
+
+                    // SAFETY: There is another byte to decode in the name.
+                    current = unsafe { current.add(1) };
+                }
             }
         }
 
         write!(f, "\"")
+    }
+}
+
+#[derive(Clone, Copy)]
+enum Component {
+    Null,
+    SymbolicReference(SymbolicReference),
+    Normal,
+}
+
+#[derive(Clone, Copy)]
+enum SymbolicReference {
+    Relative,
+    Absolute,
+}
+
+// See `makeSymbolicMangledNameStringRef` implementation.
+impl Component {
+    #[inline]
+    pub fn new(byte: u8) -> Self {
+        match byte {
+            0 => Self::Null,
+            0x01..=0x17 => Self::SymbolicReference(SymbolicReference::Relative),
+            0x18..=0x1F => Self::SymbolicReference(SymbolicReference::Absolute),
+            _ => Self::Normal,
+        }
     }
 }
 
