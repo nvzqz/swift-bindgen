@@ -5,3 +5,5 @@
 #![warn(missing_docs)]
 
 pub use swift_sys as sys;
+
+pub mod metadata;
