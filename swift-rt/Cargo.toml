@@ -11,3 +11,6 @@ documentation = "https://docs.rs/swift-rt"
 edition = "2018"
 keywords = ["swift", "bindgen", "runtime"]
 categories = ["api-bindings", "development-tools::ffi"]
+
+[dependencies]
+swift-sys = { version = "0.0.0", path = "../swift-sys" }

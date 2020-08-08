@@ -11,3 +11,7 @@ documentation = "https://docs.rs/swift"
 edition = "2018"
 keywords = ["swift", "bindgen", "stdlib"]
 categories = ["abi-bindings", "development-tools::ffi"]
+
+[dependencies]
+swift-rt = { version = "0.0.0", path = "../swift-rt" }
+swift-sys = { version = "0.0.0", path = "../swift-sys" }

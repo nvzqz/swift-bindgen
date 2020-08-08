@@ -4,6 +4,9 @@
 
 #![warn(missing_docs)]
 
+pub use swift_rt as rt;
+pub use swift_sys as sys;
+
 pub(crate) mod util;
 
 mod never;
