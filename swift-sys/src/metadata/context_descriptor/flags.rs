@@ -15,7 +15,11 @@ impl fmt::Debug for ContextDescriptorFlags {
             .field("is_generic", &self.is_generic())
             .field("is_unique", &self.is_unique())
             .field("version", &self.version())
-            .field("kind_specific_flags", &self.kind_specific_flags())
+            .field(
+                // Format flags as bits.
+                "kind_specific_flags",
+                &format_args!("{:#b}", self.kind_specific_flags()),
+            )
             .finish()
     }
 }
