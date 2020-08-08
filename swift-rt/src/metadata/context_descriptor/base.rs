@@ -1,4 +1,6 @@
-use crate::metadata::{ContextDescriptorFlags, ContextDescriptorKind, ModuleContextDescriptor};
+use crate::metadata::{
+    ContextDescriptorFlags, ContextDescriptorKind, ModuleContextDescriptor, TypeContextDescriptor,
+};
 use std::{fmt, hint, ptr};
 use swift_sys::{
     metadata::ContextDescriptor as RawContextDescriptor, ptr::RelativeIndirectablePointer,
@@ -29,6 +31,11 @@ impl fmt::Debug for ContextDescriptor {
         match self.kind() {
             ContextDescriptorKind::MODULE => ModuleContextDescriptor::fmt(
                 unsafe { &*(self as *const Self as *const ModuleContextDescriptor) },
+                f,
+            ),
+
+            kind if kind.is_type() => TypeContextDescriptor::fmt(
+                unsafe { &*(self as *const Self as *const TypeContextDescriptor) },
                 f,
             ),
 
@@ -167,6 +174,16 @@ impl ContextDescriptor {
     #[inline]
     pub fn as_module(&self) -> Option<&ModuleContextDescriptor> {
         if self.kind() == ContextDescriptorKind::MODULE {
+            Some(unsafe { &*(self as *const _ as *const _) })
+        } else {
+            None
+        }
+    }
+
+    /// Casts this context descriptor to a nominal type descriptor if it is one.
+    #[inline]
+    pub fn as_type(&self) -> Option<&TypeContextDescriptor> {
+        if self.kind().is_type() {
             Some(unsafe { &*(self as *const _ as *const _) })
         } else {
             None
