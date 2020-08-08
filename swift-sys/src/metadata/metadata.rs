@@ -1,4 +1,4 @@
-use crate::metadata::MetadataKind;
+use crate::metadata::{MetadataKind, ValueWitnessTable};
 use std::{ffi::c_void, ptr};
 
 /// Raw type metadata.
@@ -17,6 +17,14 @@ pub struct Metadata {
 }
 
 impl Metadata {
+    /// Returns a pointer to the value-witness table pointer from the pointer
+    /// to type metadata.
+    #[inline]
+    pub fn value_witness_table_ptr(this: *const Self) -> *const *const ValueWitnessTable {
+        // The table is at a single pointer offset before the metadata.
+        this.cast::<*const ValueWitnessTable>().wrapping_sub(1)
+    }
+
     /// Returns the kind of this metadata.
     #[inline]
     pub fn kind(&self) -> MetadataKind {

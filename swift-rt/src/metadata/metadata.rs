@@ -1,6 +1,6 @@
 use crate::metadata::MetadataKind;
 use std::{ffi::c_void, fmt};
-use swift_sys::metadata::Metadata as RawMetadata;
+use swift_sys::metadata::{EnumValueWitnessTable, Metadata as RawMetadata, ValueWitnessTable};
 
 /// Type metadata.
 #[repr(C)]
@@ -65,5 +65,34 @@ impl Metadata {
     #[inline]
     pub fn isa_ptr(&self) -> *const c_void {
         self.raw.isa_ptr()
+    }
+
+    /// Returns a pointer to the value-witness table pointer from the pointer
+    /// metadata.
+    #[inline]
+    fn value_witness_table_ptr(this: *const Self) -> *const *const ValueWitnessTable {
+        RawMetadata::value_witness_table_ptr(this.cast()).cast()
+    }
+
+    /// Returns the value-witness table.
+    #[inline]
+    pub fn value_witnesses(&self) -> &ValueWitnessTable {
+        unsafe { &**Self::value_witness_table_ptr(self) }
+    }
+
+    /// Returns the enum value-witness table if this metadata has enum witnesses
+    /// one.
+    #[inline]
+    pub fn enum_value_witnesses(&self) -> Option<&EnumValueWitnessTable> {
+        let ptr = Self::value_witness_table_ptr(self);
+
+        let table_ptr = unsafe { *ptr };
+        let table = unsafe { (*ptr).as_ref()? };
+
+        if table.flags.has_enum_witnesses() {
+            Some(unsafe { &*table_ptr.cast::<EnumValueWitnessTable>() })
+        } else {
+            None
+        }
     }
 }
