@@ -20,6 +20,7 @@
 
 pub mod metadata;
 pub mod ptr;
+pub mod reflection;
 
 mod opaque;
 

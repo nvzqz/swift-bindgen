@@ -23,3 +23,4 @@ pub use swift_sys as sys;
 pub mod borrow;
 pub mod mangling;
 pub mod metadata;
+pub mod reflection;
