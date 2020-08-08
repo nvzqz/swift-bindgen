@@ -1,4 +1,4 @@
-//! Swift ABI metadata.
+//! Swift type metadata.
 //!
 //! # Relevant files
 //!
@@ -9,8 +9,10 @@
 
 mod context_descriptor;
 mod kind;
+mod metadata;
 mod value_witness;
 
 pub use context_descriptor::*;
 pub use kind::*;
+pub use metadata::*;
 pub use value_witness::*;
