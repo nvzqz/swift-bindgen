@@ -5,6 +5,7 @@
 #![warn(missing_docs)]
 
 pub mod metadata;
+pub mod ptr;
 
 mod opaque;
 
