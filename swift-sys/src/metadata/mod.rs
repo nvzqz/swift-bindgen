@@ -7,6 +7,7 @@
 //! - [`MetadataKind.def`](https://github.com/apple/swift/blob/master/include/swift/ABI/MetadataKind.def)
 //! - [`ValueWitness.def`](https://github.com/apple/swift/blob/master/include/swift/ABI/ValueWitness.def)
 
+mod access_function;
 mod context_descriptor;
 mod kind;
 mod metadata;
@@ -15,6 +16,7 @@ mod response;
 mod state;
 mod value_witness;
 
+pub use access_function::*;
 pub use context_descriptor::*;
 pub use kind::*;
 pub use metadata::*;
