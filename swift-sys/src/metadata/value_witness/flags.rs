@@ -24,17 +24,34 @@ enum Bits {
     // unused             0xFF800000,
 }
 
+const MASK_KNOWN: u32 = Bits::AlignmentMask as u32
+    | Bits::IsNonPOD as u32
+    | Bits::IsNonInline as u32
+    | Bits::HasSpareBits as u32
+    | Bits::IsNonBitwiseTakable as u32
+    | Bits::HasEnumWitnesses as u32
+    | Bits::Incomplete as u32;
+
 impl fmt::Debug for ValueWitnessFlags {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("ValueWitnessFlags")
+        let mut debug_struct = f.debug_struct("ValueWitnessFlags");
+
+        debug_struct
             .field("align", &self.align())
             .field("is_pod", &self.is_pod())
             .field("is_inline_storage", &self.is_inline_storage())
             .field("has_spare_bits", &self.is_inline_storage())
             .field("is_bitwise_takable", &self.is_bitwise_takable())
             .field("has_enum_witnesses", &self.has_enum_witnesses())
-            .field("is_incomplete", &self.is_incomplete())
-            .finish()
+            .field("is_incomplete", &self.is_incomplete());
+
+        // Format any unknown flags as bits with the known bits zeroed out.
+        let unknown = self.data & !MASK_KNOWN;
+        if unknown != 0 {
+            debug_struct.field("unknown", &format_args!("{:#b}", unknown));
+        }
+
+        debug_struct.finish()
     }
 }
 
