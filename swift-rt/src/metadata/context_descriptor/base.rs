@@ -1,5 +1,6 @@
 use crate::metadata::{
-    ContextDescriptorFlags, ContextDescriptorKind, ModuleContextDescriptor, TypeContextDescriptor,
+    ContextDescriptorFlags, ContextDescriptorKind, ExtensionContextDescriptor,
+    ModuleContextDescriptor, TypeContextDescriptor,
 };
 use std::{fmt, hint, ptr};
 use swift_sys::{
@@ -31,6 +32,11 @@ impl fmt::Debug for ContextDescriptor {
         match self.kind() {
             ContextDescriptorKind::MODULE => ModuleContextDescriptor::fmt(
                 unsafe { &*(self as *const Self as *const ModuleContextDescriptor) },
+                f,
+            ),
+
+            ContextDescriptorKind::EXTENSION => ExtensionContextDescriptor::fmt(
+                unsafe { &*(self as *const Self as *const ExtensionContextDescriptor) },
                 f,
             ),
 
@@ -174,6 +180,16 @@ impl ContextDescriptor {
     #[inline]
     pub fn as_module(&self) -> Option<&ModuleContextDescriptor> {
         if self.kind() == ContextDescriptorKind::MODULE {
+            Some(unsafe { &*(self as *const _ as *const _) })
+        } else {
+            None
+        }
+    }
+
+    /// Casts this context descriptor to an extension descriptor if it is one.
+    #[inline]
+    pub fn as_extension(&self) -> Option<&ExtensionContextDescriptor> {
+        if self.kind() == ContextDescriptorKind::EXTENSION {
             Some(unsafe { &*(self as *const _ as *const _) })
         } else {
             None
