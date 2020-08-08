@@ -10,11 +10,13 @@
 mod context_descriptor;
 mod kind;
 mod metadata;
+mod request;
 mod state;
 mod value_witness;
 
 pub use context_descriptor::*;
 pub use kind::*;
 pub use metadata::*;
+pub use request::*;
 pub use state::*;
 pub use value_witness::*;
