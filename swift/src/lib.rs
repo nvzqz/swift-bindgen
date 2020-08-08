@@ -6,8 +6,10 @@
 
 pub(crate) mod util;
 
+mod never;
 mod primitive;
 mod ptr;
 
+pub use never::*;
 pub use primitive::*;
 pub use ptr::*;
