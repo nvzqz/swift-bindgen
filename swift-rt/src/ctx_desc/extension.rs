@@ -1,12 +1,12 @@
 use crate::{
-    mangling::Mangled,
-    metadata::{
+    ctx_desc::{
         ContextDescriptor, ContextDescriptorFlags, ContextDescriptorKind, ModuleContextDescriptor,
     },
+    mangling::Mangled,
 };
 use std::{fmt, ops::Deref};
 use swift_sys::{
-    metadata::ExtensionContextDescriptor as RawExtensionContextDescriptor,
+    ctx_desc::ExtensionContextDescriptor as RawExtensionContextDescriptor,
     ptr::{RelativeDirectPointer, RelativeIndirectablePointerNonNull},
 };
 

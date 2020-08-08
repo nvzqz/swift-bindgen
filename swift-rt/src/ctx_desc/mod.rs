@@ -1,6 +1,8 @@
+//! Context descriptor types.
+
 // Re-export basic types that don't need to be wrapped.
 #[doc(no_inline)]
-pub use swift_sys::metadata::{ContextDescriptorFlags, ContextDescriptorKind};
+pub use swift_sys::ctx_desc::{ContextDescriptorFlags, ContextDescriptorKind};
 
 mod base;
 mod extension;

@@ -1,4 +1,4 @@
-use crate::{metadata::ContextDescriptor, ptr::RelativeDirectPointerNonNull};
+use crate::{ctx_desc::ContextDescriptor, ptr::RelativeDirectPointerNonNull};
 use std::os::raw::c_char;
 
 /// A context descriptor for a module.

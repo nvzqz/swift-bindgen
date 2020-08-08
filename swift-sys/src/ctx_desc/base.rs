@@ -1,4 +1,4 @@
-use crate::{metadata::ContextDescriptorFlags, ptr::RelativeIndirectablePointer};
+use crate::{ctx_desc::ContextDescriptorFlags, ptr::RelativeIndirectablePointer};
 
 /// Base class for all context descriptors.
 #[repr(C)]

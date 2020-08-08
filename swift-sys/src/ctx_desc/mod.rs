@@ -1,3 +1,5 @@
+//! Context descriptor types.
+
 mod base;
 mod extension;
 mod flags;

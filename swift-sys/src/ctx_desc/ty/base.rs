@@ -1,5 +1,6 @@
 use crate::{
-    metadata::{ContextDescriptor, MetadataAccessFunction},
+    ctx_desc::ContextDescriptor,
+    metadata::MetadataAccessFunction,
     ptr::{RelativeDirectPointer, RelativeDirectPointerNonNull},
     reflection::FieldDescriptor,
 };

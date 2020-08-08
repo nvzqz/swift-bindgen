@@ -1,10 +1,10 @@
-use crate::metadata::{
+use crate::ctx_desc::{
     ContextDescriptorFlags, ContextDescriptorKind, ExtensionContextDescriptor,
     ModuleContextDescriptor, TypeContextDescriptor,
 };
 use std::{fmt, hint, ptr};
 use swift_sys::{
-    metadata::ContextDescriptor as RawContextDescriptor, ptr::RelativeIndirectablePointer,
+    ctx_desc::ContextDescriptor as RawContextDescriptor, ptr::RelativeIndirectablePointer,
 };
 
 /// Base class for all context descriptors.

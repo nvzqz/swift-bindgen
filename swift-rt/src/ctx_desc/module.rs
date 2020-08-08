@@ -1,7 +1,7 @@
-use crate::metadata::{ContextDescriptor, ContextDescriptorFlags};
+use crate::ctx_desc::{ContextDescriptor, ContextDescriptorFlags};
 use std::{fmt, ops::Deref, os::raw::c_char};
 use swift_sys::{
-    metadata::ModuleContextDescriptor as RawModuleContextDescriptor,
+    ctx_desc::ModuleContextDescriptor as RawModuleContextDescriptor,
     ptr::{RelativeDirectPointerNonNull, RelativeIndirectablePointer},
 };
 

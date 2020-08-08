@@ -1,10 +1,11 @@
 use crate::{
-    metadata::{ContextDescriptor, ContextDescriptorFlags},
+    ctx_desc::{ContextDescriptor, ContextDescriptorFlags},
     reflection::FieldDescriptor,
 };
 use std::{fmt, ops::Deref, os::raw::c_char};
 use swift_sys::{
-    metadata::{MetadataAccessFunction, TypeContextDescriptor as RawTypeContextDescriptor},
+    ctx_desc::TypeContextDescriptor as RawTypeContextDescriptor,
+    metadata::MetadataAccessFunction,
     ptr::{
         RelativeDirectPointer, RelativeDirectPointerNonNull, RelativeIndirectablePointerNonNull,
     },

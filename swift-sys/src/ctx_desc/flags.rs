@@ -1,4 +1,4 @@
-use crate::metadata::ContextDescriptorKind;
+use crate::ctx_desc::ContextDescriptorKind;
 use std::fmt;
 
 /// Flags for a context descriptor.

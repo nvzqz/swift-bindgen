@@ -1,4 +1,4 @@
-use crate::{metadata::ContextDescriptor, ptr::RelativeDirectPointer};
+use crate::{ctx_desc::ContextDescriptor, ptr::RelativeDirectPointer};
 use std::os::raw::c_char;
 
 /// Descriptor for an extension context.
