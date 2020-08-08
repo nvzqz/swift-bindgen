@@ -20,4 +20,5 @@
 
 pub use swift_sys as sys;
 
+pub mod borrow;
 pub mod metadata;
