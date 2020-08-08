@@ -1,18 +1,19 @@
 use crate::metadata::MetadataKind;
-use std::{ffi::c_void, fmt, ptr};
+use std::{ffi::c_void, ptr};
 
-/// Type metadata.
+/// Raw type metadata.
+///
+/// This type deliberately does not implement
+/// [`Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html) in order to
+/// avoid accidentally dereferencing from the wrong location.
 #[repr(C)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Metadata {
     // Of type `StoredPointer`, which is a `u32` or `u64` based on target arch.
-    kind: usize,
-}
-
-impl fmt::Debug for Metadata {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // TODO: Dynamically format as the appropriate type of metadata.
-        f.debug_struct("Metadata").finish()
-    }
+    /// The internal metadata kind value.
+    ///
+    /// Use the `kind` and `isa_ptr` methods to interpret this value.
+    pub kind: usize,
 }
 
 impl Metadata {
