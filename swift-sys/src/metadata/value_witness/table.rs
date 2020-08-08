@@ -1,3 +1,4 @@
+use crate::metadata::ValueWitnessFlags;
 use std::os::raw::{c_uint, c_void};
 
 /// A vtable of functions that implement value semantics of a type.
@@ -138,28 +139,8 @@ pub struct ValueWitnessTable {
     /// one, even for zero-sized types, like the empty tuple.
     pub stride: usize,
 
-    /// The ValueWitnessAlignmentMask bits represent the required alignment of
-    /// the first byte of an object of this type, expressed as a mask of the low
-    /// bits that must not be set in the pointer. This representation can be
-    /// easily converted to the 'alignof' result by merely adding 1, but it is
-    /// more directly useful for performing dynamic structure layouts, and it
-    /// grants an additional bit of precision in a compact field without needing
-    /// to switch to an exponent representation.
-    ///
-    /// The ValueWitnessIsNonPOD bit is set if the type is not POD.
-    ///
-    /// The ValueWitnessIsNonInline bit is set if the type cannot be represented
-    /// in a fixed-size buffer or if it is not bitwise takable.
-    ///
-    /// The ExtraInhabitantsMask bits represent the number of "extra
-    /// inhabitants" of the bit representation of the value that do not form
-    /// valid values of the type.
-    ///
-    /// The Enum_HasSpareBits bit is set if the type's binary representation has
-    /// unused bits.
-    ///
-    /// The HasEnumWitnesses bit is set if the type is an enum type.
-    pub flags: c_uint,
+    /// Extra information about type layout and value semantics.
+    pub flags: ValueWitnessFlags,
 
     /// The number of extra inhabitants in the type.
     pub extra_inhabitant_count: c_uint,
