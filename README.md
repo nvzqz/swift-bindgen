@@ -26,6 +26,18 @@ This project is composed of the following crates:
 
 - `swift-sys`: Low-level bindings to the Swift runtime.
 
+## Acknowledgements
+
+- Jordan Rose ([@UINT_MIN](https://twitter.com/UINT_MIN)) for insight into how
+  the Swift runtime works internally.
+
+- Joe Groff ([@jckarter](https://twitter.com/jckarter)) for being my Swift
+  emotional support dog while I ask for feedback on my assumptions of Swift
+  internals and ABI.
+
+- Contributors to Swift—past, present, and future—for creating a fascinating
+  language that makes apps easier to develop and faster to run.
+
 ## License
 
 This project is licensed under the [Apache License (Version 2.0)](https://github.com/rustswift/swift-bindgen/blob/main/LICENSE.txt).
