@@ -1,4 +1,4 @@
-use std::{fmt, marker::PhantomData, num::NonZeroI32, ptr};
+use std::{ffi::CStr, fmt, marker::PhantomData, num::NonZeroI32, os::raw::c_char, ptr, str};
 
 // TODO: Implement methods for `Offset` of `isize` (`intptr_t`)
 
@@ -128,6 +128,46 @@ impl<T> RelativeDirectPointer<T> {
     }
 }
 
+impl RelativeDirectPointer<c_char> {
+    /// Returns a reference to the C string pointed to by `self`, or `None` if
+    /// `offset` is zero.
+    ///
+    /// # Safety
+    ///
+    /// The placement address (`&self`), when adjusted by the stored offset,
+    /// must not:
+    ///
+    /// - Be missing a trailing zero byte.
+    ///
+    /// - Result in a null pointer.
+    #[inline]
+    pub unsafe fn as_c_str(&self) -> Option<&CStr> {
+        if self.is_null() {
+            None
+        } else {
+            Some(CStr::from_ptr(self.as_ptr()))
+        }
+    }
+
+    /// Returns a reference to the UTF-8 C string pointed to by `self`, or
+    /// `None` if `offset` is zero.
+    ///
+    /// # Safety
+    ///
+    /// The placement address (`&self`), when adjusted by the stored offset,
+    /// must not:
+    ///
+    /// - Be missing a trailing zero byte.
+    ///
+    /// - Be invalid UTF-8.
+    ///
+    /// - Result in a null pointer.
+    #[inline]
+    pub unsafe fn as_str(&self) -> Option<&str> {
+        Some(str::from_utf8_unchecked(self.as_c_str()?.to_bytes()))
+    }
+}
+
 /// A non-null pointer whose pointee is at a relative offset from itself.
 ///
 /// This type deliberately does not implement
@@ -231,5 +271,39 @@ impl<T> RelativeDirectPointerNonNull<T> {
             offset: self.offset.get(),
             marker: PhantomData,
         }
+    }
+}
+
+impl RelativeDirectPointerNonNull<c_char> {
+    /// Returns a reference to the C string pointed to by `self`.
+    ///
+    /// # Safety
+    ///
+    /// The placement address (`&self`), when adjusted by the stored offset,
+    /// must not:
+    ///
+    /// - Be missing a trailing zero byte.
+    ///
+    /// - Result in a null pointer.
+    #[inline]
+    pub unsafe fn as_c_str(&self) -> &CStr {
+        CStr::from_ptr(self.as_ptr())
+    }
+
+    /// Returns a reference to the UTF-8 C string pointed to by `self`.
+    ///
+    /// # Safety
+    ///
+    /// The placement address (`&self`), when adjusted by the stored offset,
+    /// must not:
+    ///
+    /// - Be missing a trailing zero byte.
+    ///
+    /// - Be invalid UTF-8.
+    ///
+    /// - Result in a null pointer.
+    #[inline]
+    pub unsafe fn as_str(&self) -> &str {
+        str::from_utf8_unchecked(self.as_c_str().to_bytes())
     }
 }
