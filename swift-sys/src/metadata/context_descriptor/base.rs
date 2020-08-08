@@ -1,8 +1,8 @@
 use crate::{
-    metadata::{ContextDescriptorFlags, ContextDescriptorKind},
+    metadata::{ContextDescriptorFlags, ContextDescriptorKind, ModuleContextDescriptor},
     ptr::RelativeIndirectablePointer,
 };
-use std::ptr;
+use std::{hint, ptr};
 
 /// Base class for all context descriptors.
 #[repr(C)]
@@ -95,5 +95,35 @@ impl ContextDescriptor {
     /// hierarchy of `self`.
     pub fn has_parent(&self, desc: &ContextDescriptor) -> bool {
         self.parent_iter().any(|parent| ptr::eq(parent, desc))
+    }
+
+    /// Returns the module context for `self`.
+    #[inline]
+    pub fn module_context(&self) -> &ModuleContextDescriptor {
+        let mut current = self;
+        loop {
+            if let Some(module) = current.as_module() {
+                return module;
+            } else if let Some(parent) = current.parent() {
+                current = parent;
+            } else {
+                // The runtime assumes that all context chains should eventually
+                // find a module.
+                unsafe { hint::unreachable_unchecked() };
+            }
+        }
+    }
+}
+
+/// Casting to subtypes.
+impl ContextDescriptor {
+    /// Casts this context descriptor to a module descriptor if it is one.
+    #[inline]
+    pub fn as_module(&self) -> Option<&ModuleContextDescriptor> {
+        if self.kind() == ContextDescriptorKind::MODULE {
+            Some(unsafe { &*(self as *const _ as *const _) })
+        } else {
+            None
+        }
     }
 }
