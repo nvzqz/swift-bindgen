@@ -1,0 +1,13 @@
+[package]
+name = "swift"
+version = "0.0.0"
+description = "[WIP] Idiomatic bindings to Swift's standard library."
+authors = ["Nikolai Vazquez <hello@nikolaivazquez.com>"]
+license = "Apache-2.0"
+readme = "../README.md"
+homepage = "https://github.com/rustswift/swift-bindgen"
+repository = "https://github.com/rustswift/swift-bindgen"
+documentation = "https://docs.rs/swift"
+edition = "2018"
+keywords = ["swift", "bindgen", "stdlib"]
+categories = ["abi-bindings", "development-tools::ffi"]

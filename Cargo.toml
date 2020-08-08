@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "swift",
+    "swift-bindgen",
+    "swift-rt",
+    "swift-sys",
+]

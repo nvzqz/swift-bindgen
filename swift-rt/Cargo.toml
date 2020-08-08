@@ -1,0 +1,13 @@
+[package]
+name = "swift-rt"
+version = "0.0.0"
+description = "[WIP] High level bindings to Swift's runtime."
+authors = ["Nikolai Vazquez <hello@nikolaivazquez.com>"]
+license = "Apache-2.0"
+readme = "../README.md"
+homepage = "https://github.com/rustswift/swift-bindgen"
+repository = "https://github.com/rustswift/swift-bindgen"
+documentation = "https://docs.rs/swift-rt"
+edition = "2018"
+keywords = ["swift", "bindgen", "runtime"]
+categories = ["api-bindings", "development-tools::ffi"]

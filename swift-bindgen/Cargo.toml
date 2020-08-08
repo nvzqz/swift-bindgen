@@ -1,0 +1,13 @@
+[package]
+name = "swift-bindgen"
+version = "0.0.0"
+description = "[WIP] Two-way bindings between Swift and Rust."
+authors = ["Nikolai Vazquez <hello@nikolaivazquez.com>"]
+license = "Apache-2.0"
+readme = "../README.md"
+homepage = "https://github.com/rustswift/swift-bindgen"
+repository = "https://github.com/rustswift/swift-bindgen"
+documentation = "https://docs.rs/swift-bindgen"
+edition = "2018"
+keywords = ["swift", "bindgen"]
+categories = ["api-bindings", "development-tools::ffi"]

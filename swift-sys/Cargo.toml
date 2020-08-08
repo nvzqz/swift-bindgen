@@ -1,0 +1,13 @@
+[package]
+name = "swift-sys"
+version = "0.0.0"
+description = "[WIP] Raw bindings to Swift's runtime types."
+authors = ["Nikolai Vazquez <hello@nikolaivazquez.com>"]
+license = "Apache-2.0"
+readme = "../README.md"
+homepage = "https://github.com/rustswift/swift-bindgen"
+repository = "https://github.com/rustswift/swift-bindgen"
+documentation = "https://docs.rs/swift-sys"
+edition = "2018"
+keywords = ["swift", "bindgen", "runtime"]
+categories = ["external-ffi-bindings", "development-tools::ffi"]
