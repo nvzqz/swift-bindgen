@@ -1,4 +1,4 @@
-use crate::metadata::ValueWitnessFlags;
+use crate::{mem::MemoryLayout, metadata::ValueWitnessFlags};
 use std::os::raw::{c_uint, c_void};
 
 /// A vtable of functions that implement value semantics of a type.
@@ -165,6 +165,18 @@ impl ValueWitnessTable {
     #[inline]
     pub const fn is_bitwise_takable(&self) -> bool {
         self.flags.is_bitwise_takable()
+    }
+}
+
+impl ValueWitnessTable {
+    /// Returns the size, stride, and alignment of the type.
+    #[inline]
+    pub const fn memory_layout(&self) -> MemoryLayout {
+        MemoryLayout {
+            size: self.size,
+            stride: self.stride,
+            align: self.flags.align(),
+        }
     }
 }
 
