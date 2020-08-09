@@ -5,7 +5,9 @@
 pub use swift_sys::metadata::{MetadataKind, MetadataState};
 
 mod metadata;
+mod metatype;
 mod response;
 
 pub use metadata::*;
+pub use metatype::*;
 pub use response::*;
