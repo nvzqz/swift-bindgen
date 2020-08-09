@@ -1,6 +1,6 @@
 use crate::{
     ctx_desc::TypeContextDescriptor,
-    metadata::{MetadataKind, MetatypeMetadata},
+    metadata::{EnumMetadata, MetadataKind, MetatypeMetadata},
 };
 use std::{
     fmt,
@@ -31,6 +31,10 @@ impl fmt::Debug for Metadata {
         // `fmt` is called with the type's name to ensure that the correct
         // implementation calls, and that this does not infinitely recurse.
         match self.kind() {
+            MetadataKind::ENUM | MetadataKind::OPTIONAL => {
+                EnumMetadata::fmt(unsafe { &*(self as *const Self as *const EnumMetadata) }, f)
+            }
+
             MetadataKind::METATYPE => MetatypeMetadata::fmt(
                 unsafe { &*(self as *const Self as *const MetatypeMetadata) },
                 f,
@@ -107,7 +111,7 @@ impl Metadata {
     /// Returns a pointer to the value-witness table pointer from the pointer
     /// metadata.
     #[inline]
-    fn value_witness_table_ptr(this: *const Self) -> *const *const ValueWitnessTable {
+    pub(crate) fn value_witness_table_ptr(this: *const Self) -> *const *const ValueWitnessTable {
         RawMetadata::value_witness_table_ptr(this.cast()).cast()
     }
 
@@ -154,6 +158,16 @@ impl Metadata {
 
 /// Casting to subtypes.
 impl Metadata {
+    /// Casts this metadata to an enum metadata if it is one.
+    #[inline]
+    pub fn as_enum(&self) -> Option<&EnumMetadata> {
+        if self.kind().is_enum() || self.kind().is_optional() {
+            Some(unsafe { &*(self as *const Self as *const EnumMetadata) })
+        } else {
+            None
+        }
+    }
+
     /// Casts this metadata to a metatype metadata if it is one.
     #[inline]
     pub fn as_metatype(&self) -> Option<&MetatypeMetadata> {
