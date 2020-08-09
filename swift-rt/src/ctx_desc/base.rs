@@ -1,6 +1,6 @@
 use crate::ctx_desc::{
     ContextDescriptorFlags, ContextDescriptorKind, ExtensionContextDescriptor,
-    ModuleContextDescriptor, TypeContextDescriptor,
+    ModuleContextDescriptor, ProtocolContextDescriptor, TypeContextDescriptor,
 };
 use std::{fmt, hint, ptr};
 use swift_sys::{
@@ -37,6 +37,11 @@ impl fmt::Debug for ContextDescriptor {
 
             ContextDescriptorKind::EXTENSION => ExtensionContextDescriptor::fmt(
                 unsafe { &*(self as *const Self as *const ExtensionContextDescriptor) },
+                f,
+            ),
+
+            ContextDescriptorKind::PROTOCOL => ProtocolContextDescriptor::fmt(
+                unsafe { &*(self as *const Self as *const ProtocolContextDescriptor) },
                 f,
             ),
 
