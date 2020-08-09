@@ -40,6 +40,7 @@ impl fmt::Debug for ContextDescriptor {
                 f,
             ),
 
+            // This case also handles classes.
             kind if kind.is_type() => TypeContextDescriptor::fmt(
                 unsafe { &*(self as *const Self as *const TypeContextDescriptor) },
                 f,

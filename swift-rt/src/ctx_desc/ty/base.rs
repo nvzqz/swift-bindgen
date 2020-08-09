@@ -1,5 +1,5 @@
 use crate::{
-    ctx_desc::{ContextDescriptor, ContextDescriptorFlags},
+    ctx_desc::{ClassDescriptor, ContextDescriptor, ContextDescriptorFlags, ContextDescriptorKind},
     reflection::FieldDescriptor,
 };
 use std::{fmt, ops::Deref, os::raw::c_char};
@@ -38,16 +38,28 @@ unsafe impl Sync for TypeContextDescriptor {}
 
 impl fmt::Debug for TypeContextDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // TODO: Dynamically format as the appropriate subtype.
+        // Format as the specific context descriptor type.
+        //
+        // `fmt` is called with the type's name to ensure that the correct
+        // implementation calls, and that this does not infinitely recurse.
+        match self.kind() {
+            ContextDescriptorKind::CLASS => ClassDescriptor::fmt(
+                unsafe { &*(self as *const Self as *const ClassDescriptor) },
+                f,
+            ),
 
-        // Format name field first to make nested output easier to follow.
-        f.debug_struct("TypeContextDescriptor")
-            .field("name", &self.name())
-            .field("flags", &self.flags())
-            .field("parent", &self.parent())
-            .field("access_function", &self.access_function())
-            .field("fields", &self.fields())
-            .finish()
+            // Default to "unknown" descriptor.
+            //
+            // Format name field first to make nested output easier to follow.
+            _ => f
+                .debug_struct("TypeContextDescriptor")
+                .field("name", &self.name())
+                .field("flags", &self.flags())
+                .field("parent", self.parent())
+                .field("access_function", &self.access_function())
+                .field("fields", &self.fields())
+                .finish(),
+        }
     }
 }
 
