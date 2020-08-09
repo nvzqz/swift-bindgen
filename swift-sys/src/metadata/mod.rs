@@ -15,6 +15,7 @@ mod metatype;
 mod request;
 mod response;
 mod state;
+mod struct_;
 mod value_witness;
 
 pub use access_function::*;
@@ -25,4 +26,5 @@ pub use metatype::*;
 pub use request::*;
 pub use response::*;
 pub use state::*;
+pub use struct_::*;
 pub use value_witness::*;

@@ -1,6 +1,6 @@
 use crate::{
     ctx_desc::TypeContextDescriptor,
-    metadata::{EnumMetadata, MetadataKind, MetatypeMetadata},
+    metadata::{EnumMetadata, MetadataKind, MetatypeMetadata, StructMetadata},
 };
 use std::{
     fmt,
@@ -34,6 +34,11 @@ impl fmt::Debug for Metadata {
             MetadataKind::ENUM | MetadataKind::OPTIONAL => {
                 EnumMetadata::fmt(unsafe { &*(self as *const Self as *const EnumMetadata) }, f)
             }
+
+            MetadataKind::STRUCT => StructMetadata::fmt(
+                unsafe { &*(self as *const Self as *const StructMetadata) },
+                f,
+            ),
 
             MetadataKind::METATYPE => MetatypeMetadata::fmt(
                 unsafe { &*(self as *const Self as *const MetatypeMetadata) },
@@ -163,6 +168,16 @@ impl Metadata {
     pub fn as_enum(&self) -> Option<&EnumMetadata> {
         if self.kind().is_enum() || self.kind().is_optional() {
             Some(unsafe { &*(self as *const Self as *const EnumMetadata) })
+        } else {
+            None
+        }
+    }
+
+    /// Casts this metadata to a struct metadata if it is one.
+    #[inline]
+    pub fn as_struct(&self) -> Option<&StructMetadata> {
+        if self.kind().is_struct() {
+            Some(unsafe { &*(self as *const Self as *const StructMetadata) })
         } else {
             None
         }

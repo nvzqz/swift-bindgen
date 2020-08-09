@@ -8,8 +8,10 @@ mod enum_;
 mod metadata;
 mod metatype;
 mod response;
+mod struct_;
 
 pub use enum_::*;
 pub use metadata::*;
 pub use metatype::*;
 pub use response::*;
+pub use struct_::*;
