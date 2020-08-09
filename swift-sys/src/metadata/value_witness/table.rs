@@ -146,6 +146,28 @@ pub struct ValueWitnessTable {
     pub extra_inhabitant_count: c_uint,
 }
 
+/// Methods that wrap [`ValueWitnessFlags`](struct.ValueWitnessFlags.html).
+impl ValueWitnessTable {
+    /// Returns `true` if the value is allocated inline.
+    #[inline]
+    pub const fn is_value_inline(&self) -> bool {
+        self.flags.is_inline_storage()
+    }
+
+    /// Returns `true` if values of this type can be copied with `memcpy` and
+    /// destroyed with a no-op.
+    #[inline]
+    pub const fn is_pod(&self) -> bool {
+        self.flags.is_pod()
+    }
+
+    /// Returns `true` if values of this type can be taken with `memcpy`.
+    #[inline]
+    pub const fn is_bitwise_takable(&self) -> bool {
+        self.flags.is_bitwise_takable()
+    }
+}
+
 /// Function pointer wrapper methods.
 ///
 /// These methods use generic parameters to:
