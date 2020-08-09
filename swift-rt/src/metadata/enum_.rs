@@ -2,7 +2,7 @@ use crate::{
     ctx_desc::EnumDescriptor,
     metadata::{Metadata, MetadataKind},
 };
-use std::fmt;
+use std::{fmt, os::raw::c_uint};
 use swift_sys::metadata::{EnumMetadata as RawEnumMetadata, EnumValueWitnessTable};
 
 /// Metadata for enums.
@@ -106,5 +106,40 @@ impl EnumMetadata {
     #[inline]
     pub fn description(&self) -> &EnumDescriptor {
         unsafe { &*self.raw.description.cast() }
+    }
+}
+
+/// Value-witness function invocation.
+///
+/// # Safety
+///
+/// These methods call external raw C function pointers whose implementations
+/// are not known to be safe. These also use raw pointers, so care must be taken
+/// to ensure the read/written data is correctly referenced.
+///
+/// These methods are slightly safer than invoking the value witnesses directly
+/// because they pass the expected metadata pointer to the `self` parameter.
+impl EnumMetadata {
+    /// A generic wrapper over
+    /// [the corresponding function pointer](struct.EnumValueWitnessTable.html#structfield.get_enum_tag).
+    #[inline(always)]
+    pub unsafe fn vw_get_enum_tag<T>(&self, obj: *const T) -> c_uint {
+        self.value_witnesses().get_enum_tag(obj, self)
+    }
+
+    /// A generic wrapper over
+    /// [the corresponding function pointer](struct.EnumValueWitnessTable.html#structfield.destructive_project_enum_data).
+    #[inline(always)]
+    pub unsafe fn vw_destructive_project_enum_data<T>(&self, obj: *mut T) {
+        self.value_witnesses()
+            .destructive_project_enum_data(obj, self);
+    }
+
+    /// A generic wrapper over
+    /// [the corresponding function pointer](struct.EnumValueWitnessTable.html#structfield.destructive_inject_enum_tag).
+    #[inline(always)]
+    pub unsafe fn vw_destructive_inject_enum_tag<T>(&self, obj: *mut T, tag: c_uint) {
+        self.value_witnesses()
+            .destructive_inject_enum_tag(obj, tag, self);
     }
 }
