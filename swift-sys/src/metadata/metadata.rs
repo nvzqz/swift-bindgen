@@ -1,4 +1,7 @@
-use crate::metadata::{MetadataKind, ValueWitnessTable};
+use crate::{
+    ctx_desc::TypeContextDescriptor,
+    metadata::{MetadataKind, ValueWitnessTable},
+};
 use std::{ffi::c_void, ptr};
 
 /// Raw type metadata.
@@ -23,6 +26,14 @@ impl Metadata {
     pub fn value_witness_table_ptr(this: *const Self) -> *const *const ValueWitnessTable {
         // The table is at a single pointer offset before the metadata.
         this.cast::<*const ValueWitnessTable>().wrapping_sub(1)
+    }
+
+    /// Returns a pointer to the type descriptor pointer from the pointer
+    /// to type metadata.
+    #[inline]
+    pub fn type_descriptor_ptr(this: *const Self) -> *const *const TypeContextDescriptor {
+        // The descriptor is at a single pointer offset after the metadata.
+        this.cast::<*const TypeContextDescriptor>().wrapping_add(1)
     }
 
     /// Returns the kind of this metadata.

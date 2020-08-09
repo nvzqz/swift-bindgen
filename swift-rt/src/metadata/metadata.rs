@@ -1,4 +1,4 @@
-use crate::metadata::MetadataKind;
+use crate::{ctx_desc::TypeContextDescriptor, metadata::MetadataKind};
 use std::{ffi::c_void, fmt};
 use swift_sys::metadata::{EnumValueWitnessTable, Metadata as RawMetadata, ValueWitnessTable};
 
@@ -91,6 +91,24 @@ impl Metadata {
 
         if table.flags.has_enum_witnesses() {
             Some(unsafe { &*table_ptr.cast::<EnumValueWitnessTable>() })
+        } else {
+            None
+        }
+    }
+
+    /// Returns a pointer to the type descriptor pointer from the pointer
+    /// metadata.
+    #[inline]
+    fn type_descriptor_ptr(this: *const Self) -> *const *const TypeContextDescriptor {
+        RawMetadata::type_descriptor_ptr(this.cast()).cast()
+    }
+
+    /// Returns a reference to the nominal type descriptor if this metadata
+    /// represents a nominal type.
+    #[inline]
+    pub fn type_descriptor(&self) -> Option<&TypeContextDescriptor> {
+        if self.kind().is_nominal_type() {
+            unsafe { (*Self::type_descriptor_ptr(self)).as_ref() }
         } else {
             None
         }
