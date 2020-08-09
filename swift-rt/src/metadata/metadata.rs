@@ -2,7 +2,10 @@ use crate::{
     ctx_desc::TypeContextDescriptor,
     metadata::{MetadataKind, MetatypeMetadata},
 };
-use std::{ffi::c_void, fmt};
+use std::{
+    fmt,
+    os::raw::{c_uint, c_void},
+};
 use swift_sys::metadata::{EnumValueWitnessTable, Metadata as RawMetadata, ValueWitnessTable};
 
 /// Type metadata.
@@ -159,5 +162,92 @@ impl Metadata {
         } else {
             None
         }
+    }
+}
+
+/// Value-witness function invocation.
+///
+/// # Safety
+///
+/// These methods call external raw C function pointers whose implementations
+/// are not known to be safe. These also use raw pointers, so care must be taken
+/// to ensure the read/written data is correctly referenced.
+///
+/// These methods are slightly safer than invoking the value witnesses directly
+/// because they pass the expected metadata pointer to the `self` parameter.
+impl Metadata {
+    /// A generic wrapper over
+    /// [the value-witness function](struct.ValueWitnessTable.html#structfield.initialize_buffer_with_copy_of_buffer).
+    #[inline(always)]
+    pub unsafe fn vw_initialize_buffer_with_copy_of_buffer<T, B>(
+        &self,
+        dest: *mut B,
+        src: *mut B,
+    ) -> *mut T
+    where
+        B: ?Sized,
+    {
+        self.value_witnesses()
+            .initialize_buffer_with_copy_of_buffer(dest, src, self)
+    }
+
+    /// A generic wrapper over
+    /// [the value-witness function](struct.ValueWitnessTable.html#structfield.destroy).
+    #[inline(always)]
+    pub unsafe fn vw_destroy<T>(&self, object: *mut T) {
+        self.value_witnesses().destroy(object, self);
+    }
+
+    /// A generic wrapper over
+    /// [the value-witness function](struct.ValueWitnessTable.html#structfield.initialize_with_copy).
+    #[inline(always)]
+    pub unsafe fn vw_initialize_with_copy<T>(&self, dest: *mut T, src: *mut T) -> *mut T {
+        self.value_witnesses().initialize_with_copy(dest, src, self)
+    }
+
+    /// A generic wrapper over
+    /// [the value-witness function](struct.ValueWitnessTable.html#structfield.assign_with_copy).
+    #[inline(always)]
+    pub unsafe fn vw_assign_with_copy<T>(&self, dest: *mut T, src: *mut T) -> *mut T {
+        self.value_witnesses().assign_with_copy(dest, src, self)
+    }
+
+    /// A generic wrapper over
+    /// [the value-witness function](struct.ValueWitnessTable.html#structfield.initialize_with_take).
+    #[inline(always)]
+    pub unsafe fn vw_initialize_with_take<T>(&self, dest: *mut T, src: *mut T) -> *mut T {
+        self.value_witnesses().initialize_with_take(dest, src, self)
+    }
+
+    /// A generic wrapper over
+    /// [the value-witness function](struct.ValueWitnessTable.html#structfield.assign_with_take).
+    #[inline(always)]
+    pub unsafe fn vw_assign_with_take<T>(&self, dest: *mut T, src: *mut T) -> *mut T {
+        self.value_witnesses().assign_with_take(dest, src, self)
+    }
+
+    /// A generic wrapper over
+    /// [the value-witness function](struct.ValueWitnessTable.html#structfield.get_enum_tag_single_payload).
+    #[inline(always)]
+    pub unsafe fn vw_get_enum_tag_single_payload<T>(
+        &self,
+        enum_: *const T,
+        empty_cases: c_uint,
+    ) -> c_uint {
+        self.value_witnesses()
+            .get_enum_tag_single_payload(enum_, empty_cases, self)
+    }
+
+    /// A generic wrapper over
+    /// [the value-witness function](struct.ValueWitnessTable.html#structfield.store_enum_tag_single_payload).
+    #[inline(always)]
+    pub unsafe fn vw_store_enum_tag_single_payload<T>(
+        &self,
+        enum_: *mut T,
+        which_case: c_uint,
+        empty_cases: c_uint,
+    ) {
+        self.value_witnesses()
+            .store_enum_tag_single_payload(enum_, which_case, empty_cases, self);
     }
 }
