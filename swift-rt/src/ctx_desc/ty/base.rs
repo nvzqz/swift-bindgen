@@ -1,5 +1,8 @@
 use crate::{
-    ctx_desc::{ClassDescriptor, ContextDescriptor, ContextDescriptorFlags, ContextDescriptorKind},
+    ctx_desc::{
+        ClassDescriptor, ContextDescriptor, ContextDescriptorFlags, ContextDescriptorKind,
+        StructDescriptor,
+    },
     reflection::FieldDescriptor,
 };
 use std::{fmt, ops::Deref, os::raw::c_char};
@@ -45,6 +48,11 @@ impl fmt::Debug for TypeContextDescriptor {
         match self.kind() {
             ContextDescriptorKind::CLASS => ClassDescriptor::fmt(
                 unsafe { &*(self as *const Self as *const ClassDescriptor) },
+                f,
+            ),
+
+            ContextDescriptorKind::STRUCT => StructDescriptor::fmt(
+                unsafe { &*(self as *const Self as *const StructDescriptor) },
                 f,
             ),
 
