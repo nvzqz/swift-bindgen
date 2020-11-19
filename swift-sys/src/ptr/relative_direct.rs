@@ -4,9 +4,8 @@ use std::{ffi::CStr, fmt, marker::PhantomData, num::NonZeroI32, os::raw::c_char,
 
 /// A nullable pointer whose pointee is at a relative offset from itself.
 ///
-/// This type deliberately does not implement
-/// [`Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html) in order to
-/// avoid accidentally dereferencing from the wrong location.
+/// This type deliberately does not implement [`Copy`] in order to avoid
+/// accidentally dereferencing from the wrong location.
 #[repr(transparent)]
 pub struct RelativeDirectPointer<T, Offset = i32> {
     offset: Offset,
@@ -170,9 +169,8 @@ impl RelativeDirectPointer<c_char> {
 
 /// A non-null pointer whose pointee is at a relative offset from itself.
 ///
-/// This type deliberately does not implement
-/// [`Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html) in order to
-/// avoid accidentally dereferencing from the wrong location.
+/// This type deliberately does not implement [`Copy`] in order to avoid
+/// accidentally dereferencing from the wrong location.
 #[repr(transparent)]
 pub struct RelativeDirectPointerNonNull<T, Offset = NonZeroI32> {
     offset: Offset,

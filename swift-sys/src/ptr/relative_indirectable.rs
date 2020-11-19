@@ -3,9 +3,8 @@ use std::{fmt, marker::PhantomData, mem, num::NonZeroI32};
 /// A nullable pointer whose pointee is either at a relative offset from itself
 /// or referenced at that offset.
 ///
-/// This type deliberately does not implement
-/// [`Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html) in order to
-/// avoid accidentally dereferencing from the wrong location.
+/// This type deliberately does not implement [`Copy`] in order to avoid
+/// accidentally dereferencing from the wrong location.
 #[repr(transparent)]
 pub struct RelativeIndirectablePointer<T, Offset = i32> {
     offset: Offset,
@@ -153,9 +152,8 @@ impl<T> RelativeIndirectablePointer<T> {
 /// A non-null pointer whose pointee is either at a relative offset from itself
 /// or referenced at that offset.
 ///
-/// This type deliberately does not implement
-/// [`Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html) in order to
-/// avoid accidentally dereferencing from the wrong location.
+/// This type deliberately does not implement [`Copy`] in order to avoid
+/// accidentally dereferencing from the wrong location.
 #[repr(transparent)]
 pub struct RelativeIndirectablePointerNonNull<T, Offset = NonZeroI32> {
     offset: Offset,
