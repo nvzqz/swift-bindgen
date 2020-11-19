@@ -9,8 +9,7 @@ use std::os::raw::{c_uint, c_void};
 ///
 /// Equivalent to fields in `#if WANT_REQUIRED_VALUE_WITNESSES` in
 /// [`ValueWitness.def`](https://github.com/apple/swift/blob/master/include/swift/ABI/ValueWitness.def).
-/// Fields for `#if WANT_ENUM_VALUE_WITNESSES` are in
-/// [`EnumValueWitnessTable`](struct.EnumValueWitnessTable.html).
+/// Fields for `#if WANT_ENUM_VALUE_WITNESSES` are in [`EnumValueWitnessTable`].
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct ValueWitnessTable {
