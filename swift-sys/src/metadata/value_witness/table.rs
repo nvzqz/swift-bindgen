@@ -305,7 +305,7 @@ impl ValueWitnessTable {
     }
 }
 
-/// A value-witness table with enum entry points.
+/// A [`ValueWitnessTable`] with enum entry points.
 ///
 /// Equivalent to `EnumValueWitnessTable` in
 /// [`Metadata.h`](https://github.com/apple/swift/blob/master/include/swift/Runtime/Metadata.h).
