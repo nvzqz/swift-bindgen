@@ -121,14 +121,14 @@ impl EnumMetadata {
 /// because they pass the expected metadata pointer to the `self` parameter.
 impl EnumMetadata {
     /// A generic wrapper over
-    /// [the corresponding function pointer](struct.EnumValueWitnessTable.html#structfield.get_enum_tag).
+    /// [the corresponding function pointer](EnumValueWitnessTable#structfield.get_enum_tag).
     #[inline(always)]
     pub unsafe fn vw_get_enum_tag<T>(&self, obj: *const T) -> c_uint {
         self.value_witnesses().get_enum_tag(obj, self)
     }
 
     /// A generic wrapper over
-    /// [the corresponding function pointer](struct.EnumValueWitnessTable.html#structfield.destructive_project_enum_data).
+    /// [the corresponding function pointer](EnumValueWitnessTable#structfield.destructive_project_enum_data).
     #[inline(always)]
     pub unsafe fn vw_destructive_project_enum_data<T>(&self, obj: *mut T) {
         self.value_witnesses()
@@ -136,7 +136,7 @@ impl EnumMetadata {
     }
 
     /// A generic wrapper over
-    /// [the corresponding function pointer](struct.EnumValueWitnessTable.html#structfield.destructive_inject_enum_tag).
+    /// [the corresponding function pointer](EnumValueWitnessTable#structfield.destructive_inject_enum_tag).
     #[inline(always)]
     pub unsafe fn vw_destructive_inject_enum_tag<T>(&self, obj: *mut T, tag: c_uint) {
         self.value_witnesses()
