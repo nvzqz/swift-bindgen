@@ -1,6 +1,6 @@
 use crate::{
     ctx_desc::TypeContextDescriptor,
-    metadata::{EnumMetadata, MetadataKind, MetatypeMetadata, StructMetadata},
+    metadata::{EnumMetadata, MetadataKind, MetatypeMetadata, StructMetadata, TupleMetadata},
 };
 use std::{
     fmt,
@@ -37,6 +37,11 @@ impl fmt::Debug for Metadata {
 
             MetadataKind::STRUCT => StructMetadata::fmt(
                 unsafe { &*(self as *const Self as *const StructMetadata) },
+                f,
+            ),
+
+            MetadataKind::TUPLE => TupleMetadata::fmt(
+                unsafe { &*(self as *const Self as *const TupleMetadata) },
                 f,
             ),
 
@@ -178,6 +183,16 @@ impl Metadata {
     pub fn as_struct(&self) -> Option<&StructMetadata> {
         if self.kind().is_struct() {
             Some(unsafe { &*(self as *const Self as *const StructMetadata) })
+        } else {
+            None
+        }
+    }
+
+    /// Casts this metadata to a tuple metadata if it is one.
+    #[inline]
+    pub fn as_tuple(&self) -> Option<&TupleMetadata> {
+        if self.kind().is_tuple() {
+            Some(unsafe { &*(self as *const Self as *const TupleMetadata) })
         } else {
             None
         }

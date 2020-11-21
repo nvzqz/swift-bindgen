@@ -16,6 +16,7 @@ mod request;
 mod response;
 mod state;
 mod struct_;
+mod tuple;
 mod value_witness;
 
 pub use access_function::*;
@@ -27,4 +28,5 @@ pub use request::*;
 pub use response::*;
 pub use state::*;
 pub use struct_::*;
+pub use tuple::*;
 pub use value_witness::*;
