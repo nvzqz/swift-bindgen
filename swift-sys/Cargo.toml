@@ -11,3 +11,7 @@ documentation = "https://docs.rs/swift-sys"
 edition = "2018"
 keywords = ["swift", "bindgen", "runtime"]
 categories = ["external-ffi-bindings", "development-tools::ffi"]
+
+[features]
+default = []
+link = []

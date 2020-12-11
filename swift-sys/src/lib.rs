@@ -19,6 +19,7 @@
 #![warn(missing_docs)]
 
 pub mod ctx_desc;
+pub mod heap;
 pub mod mem;
 pub mod metadata;
 pub mod ptr;
