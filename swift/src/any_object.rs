@@ -85,3 +85,10 @@ impl AnyObject {
         swift_nonatomic_unknownObjectRelease(ptr);
     }
 }
+
+impl AnyObject {
+    #[inline]
+    pub(crate) const fn as_ptr(&self) -> NonNull<c_void> {
+        self.ptr
+    }
+}
