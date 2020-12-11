@@ -1,5 +1,6 @@
+use crate::{AnyClass, AnyType};
 use std::{ffi::c_void, mem, ptr::NonNull};
-use swift_sys::heap::fns::*;
+use swift_sys::{casting::*, heap::fns::*};
 
 // TODO: Make `AnyObject` work with `Arc` from https://github.com/nvzqz/fruity.
 
@@ -90,5 +91,28 @@ impl AnyObject {
     #[inline]
     pub(crate) const fn as_ptr(&self) -> NonNull<c_void> {
         self.ptr
+    }
+
+    /// Returns the dynamic type of this object.
+    ///
+    /// This is equivalent to [`type(of:)`][docs].
+    ///
+    /// [docs]: https://developer.apple.com/documentation/swift/2885064-type
+    #[inline]
+    pub fn get_type(&self) -> AnyType {
+        self.get_class().into()
+    }
+
+    /// Returns the dynamic type of this object.
+    ///
+    /// This is equivalent to [`type(of:)`][docs].
+    ///
+    /// [docs]: https://developer.apple.com/documentation/swift/2885064-type
+    #[inline]
+    pub fn get_class(&self) -> AnyClass {
+        unsafe {
+            let ty = swift_getObjectType(self.as_ptr().as_ptr().cast());
+            AnyClass::from_metadata(NonNull::new_unchecked(ty as *mut _))
+        }
     }
 }

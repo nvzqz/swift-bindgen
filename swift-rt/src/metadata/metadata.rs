@@ -106,6 +106,12 @@ impl Metadata {
         }
     }
 
+    /// Returns the raw kind of this metadata.
+    #[inline]
+    pub const fn raw_kind(&self) -> usize {
+        self.raw.kind
+    }
+
     /// Returns the kind of this metadata.
     #[inline]
     pub fn kind(&self) -> MetadataKind {

@@ -18,6 +18,7 @@
 
 #![warn(missing_docs)]
 
+pub mod casting;
 pub mod ctx_desc;
 pub mod heap;
 pub mod mem;
