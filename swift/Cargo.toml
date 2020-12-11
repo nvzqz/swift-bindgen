@@ -14,4 +14,4 @@ categories = ["abi-bindings", "development-tools::ffi"]
 
 [dependencies]
 swift-rt = { version = "0.0.0", path = "../swift-rt" }
-swift-sys = { version = "0.0.0", path = "../swift-sys" }
+swift-sys = { version = "0.0.0", path = "../swift-sys", features = ["link"] }
