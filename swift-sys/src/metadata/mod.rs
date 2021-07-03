@@ -7,6 +7,8 @@
 //! - [`MetadataKind.def`](https://github.com/apple/swift/blob/master/include/swift/ABI/MetadataKind.def)
 //! - [`ValueWitness.def`](https://github.com/apple/swift/blob/master/include/swift/ABI/ValueWitness.def)
 
+pub mod fns;
+
 mod access_function;
 mod enum_;
 mod kind;

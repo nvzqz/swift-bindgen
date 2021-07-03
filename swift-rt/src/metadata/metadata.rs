@@ -106,6 +106,27 @@ impl Metadata {
         }
     }
 
+    /// Return the name of a Swift type represented by a metadata object.
+    #[inline]
+    #[doc(alias = "swift_getTypeName")]
+    pub fn name(&self, qualified: bool) -> &'static str {
+        unsafe { RawMetadata::name(&self.raw, qualified) }
+    }
+
+    /// Returns the mangled name of a Swift type represented by a metadata
+    /// object.
+    ///
+    /// # Availability
+    ///
+    /// **Swift:** 5.3
+    #[inline]
+    #[doc(alias = "swift_getMangledTypeName")]
+    pub fn mangled_name(&self) -> &'static str {
+        // TODO: Dynamically load the symbol at runtime and return `Result` with
+        // missing symbol error type.
+        unsafe { RawMetadata::mangled_name(&self.raw) }
+    }
+
     /// Returns the raw kind of this metadata.
     #[inline]
     pub const fn raw_kind(&self) -> usize {

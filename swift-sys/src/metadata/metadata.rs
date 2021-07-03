@@ -1,8 +1,8 @@
 use crate::{
     ctx_desc::TypeContextDescriptor,
-    metadata::{MetadataKind, ValueWitnessTable},
+    metadata::{fns, MetadataKind, ValueWitnessTable},
 };
-use std::{ffi::c_void, ptr};
+use std::{ffi::c_void, ptr, slice, str};
 
 /// Raw type metadata.
 ///
@@ -19,6 +19,32 @@ pub struct Metadata {
 }
 
 impl Metadata {
+    /// Returns the name of a Swift type represented by a metadata object.
+    #[inline]
+    #[doc(alias = "swift_getTypeName")]
+    pub unsafe fn name(this: *const Self, qualified: bool) -> &'static str {
+        let name = fns::swift_getTypeName(this, qualified);
+        let slice = slice::from_raw_parts(name.data.cast::<u8>(), name.length);
+        str::from_utf8_unchecked(slice)
+    }
+
+    /// Returns the mangled name of a Swift type represented by a metadata
+    /// object.
+    ///
+    /// # Availability
+    ///
+    /// **Swift:** 5.3
+    #[inline]
+    #[doc(alias = "swift_getMangledTypeName")]
+    pub unsafe fn mangled_name(this: *const Self) -> &'static str {
+        // TODO: Dynamically load the symbol at runtime and return `Result` with
+        // missing symbol error type.
+
+        let name = fns::swift_getMangledTypeName(this);
+        let slice = slice::from_raw_parts(name.data.cast::<u8>(), name.length);
+        str::from_utf8_unchecked(slice)
+    }
+
     /// Returns a pointer to the value-witness table pointer from the pointer
     /// to type metadata.
     #[inline]

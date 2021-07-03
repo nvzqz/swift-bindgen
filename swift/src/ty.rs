@@ -25,6 +25,27 @@ impl AnyType {
         unsafe { &*self.0.as_ptr() }
     }
 
+    /// Return the name of a Swift type represented by a metadata object.
+    #[inline]
+    #[doc(alias = "swift_getTypeName")]
+    pub fn name(&self, qualified: bool) -> &'static str {
+        self.metadata().name(qualified)
+    }
+
+    /// Returns the mangled name of a Swift type represented by a metadata
+    /// object.
+    ///
+    /// # Availability
+    ///
+    /// **Swift:** 5.3
+    #[inline]
+    #[doc(alias = "swift_getMangledTypeName")]
+    pub fn mangled_name(&self) -> &'static str {
+        // TODO: Dynamically load the symbol at runtime and return `Result` with
+        // missing symbol error type.
+        self.metadata().mangled_name()
+    }
+
     /// Returns this type as a class if it is one.
     #[inline]
     pub fn to_class(self) -> Option<AnyClass> {
@@ -80,5 +101,24 @@ impl AnyClass {
     #[inline]
     pub(crate) unsafe fn from_metadata(ty: NonNull<Metadata>) -> Self {
         Self(AnyType::from_metadata(ty))
+    }
+
+    /// Return the name of a Swift type represented by a metadata object.
+    #[inline]
+    #[doc(alias = "swift_getTypeName")]
+    pub fn name(&self, qualified: bool) -> &'static str {
+        self.0.name(qualified)
+    }
+
+    /// Returns the mangled name of a Swift type represented by a metadata
+    /// object.
+    ///
+    /// # Availability
+    ///
+    /// **Swift:** 5.3
+    #[inline]
+    #[doc(alias = "swift_getMangledTypeName")]
+    pub fn mangled_name(&self) -> &'static str {
+        self.0.mangled_name()
     }
 }
