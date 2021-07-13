@@ -1,12 +1,17 @@
 use crate::{
     ctx_desc::TypeContextDescriptor,
-    metadata::{EnumMetadata, MetadataKind, MetatypeMetadata, StructMetadata, TupleMetadata},
+    metadata::{
+        EnumMetadata, MetadataKind, MetadataResponse, MetatypeMetadata, StructMetadata,
+        TupleMetadata,
+    },
 };
 use std::{
     fmt,
     os::raw::{c_uint, c_void},
 };
-use swift_sys::metadata::{EnumValueWitnessTable, Metadata as RawMetadata, ValueWitnessTable};
+use swift_sys::metadata::{
+    EnumValueWitnessTable, Metadata as RawMetadata, MetadataRequest, ValueWitnessTable,
+};
 
 /// Type metadata.
 ///
@@ -104,6 +109,21 @@ impl Metadata {
         Self {
             raw: RawMetadata { kind },
         }
+    }
+
+    /// Fetch a uniqued metadata object for a generic nominal type.
+    #[inline]
+    #[doc(alias = "swift_getGenericMetadata")]
+    pub unsafe fn get_generic(
+        request: MetadataRequest,
+        arguments: *const *const c_void,
+        description: *const TypeContextDescriptor,
+    ) -> MetadataResponse {
+        MetadataResponse::from_raw(RawMetadata::get_generic(
+            request,
+            arguments,
+            description.cast(),
+        ))
     }
 
     /// Return the name of a Swift type represented by a metadata object.

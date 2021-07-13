@@ -2,8 +2,11 @@
 
 // #![cfg(feature = "link")]
 
-use crate::metadata::Metadata;
-use std::os::raw::c_char;
+use crate::{
+    ctx_desc::TypeContextDescriptor,
+    metadata::{Metadata, MetadataRequest, MetadataResponse},
+};
+use std::os::raw::{c_char, c_void};
 
 /// The pair of values returned by type name lookup functions.
 #[repr(C)]
@@ -21,6 +24,13 @@ pub struct TypeNamePair {
 // See https://github.com/rust-lang/rust/pull/64582
 #[link(name = "swiftCore", kind = "dylib")]
 extern /* "Swift" */ {
+    /// Fetch a uniqued metadata object for a generic nominal type.
+    pub fn swift_getGenericMetadata(
+        request: MetadataRequest,
+        arguments: *const *const c_void,
+        description: *const TypeContextDescriptor,
+    ) -> MetadataResponse;
+
     /// Returns the name of a Swift type represented by a metadata object.
     pub fn swift_getTypeName(ty: *const Metadata, qualified: bool) -> TypeNamePair;
 

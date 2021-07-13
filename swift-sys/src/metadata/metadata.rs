@@ -1,6 +1,6 @@
 use crate::{
     ctx_desc::TypeContextDescriptor,
-    metadata::{fns, MetadataKind, ValueWitnessTable},
+    metadata::{fns, MetadataKind, MetadataRequest, MetadataResponse, ValueWitnessTable},
 };
 use std::{ffi::c_void, ptr, slice, str};
 
@@ -19,6 +19,21 @@ pub struct Metadata {
 }
 
 impl Metadata {
+    /// Fetch a uniqued metadata object for a generic nominal type.
+    ///
+    /// # Safety
+    ///
+    /// The arguments vector must be correct for the given type descriptor.
+    #[inline]
+    #[doc(alias = "swift_getGenericMetadata")]
+    pub unsafe fn get_generic(
+        request: MetadataRequest,
+        arguments: *const *const c_void,
+        description: *const TypeContextDescriptor,
+    ) -> MetadataResponse {
+        fns::swift_getGenericMetadata(request, arguments, description)
+    }
+
     /// Returns the name of a Swift type represented by a metadata object.
     #[inline]
     #[doc(alias = "swift_getTypeName")]
