@@ -1,4 +1,4 @@
-use std::{cell::UnsafeCell, ffi::c_void, marker::PhantomData, ptr::NonNull};
+use std::{cell::UnsafeCell, ffi::c_void, marker::PhantomData, mem, ptr::NonNull};
 use swift_rt::metadata::{Metadata, MetadataKind, MetadataResponse, StructMetadata, Type};
 use swift_sys::{
     heap::fns as heap_fns,
@@ -128,6 +128,38 @@ where
         } else {
             None
         }
+    }
+}
+
+/// Non-atomic memory management.
+impl<T> Array<T> {
+    /// Performs a [`clone`](Self::clone) with a non-atomic retain.
+    ///
+    /// # Safety
+    ///
+    /// Because this operation is non-atomic, it may not synchronize with other
+    /// threads using this object concurrently. If so, this may result in a
+    /// use-after-free.
+    pub unsafe fn clone_nonatomic(&self) -> Self {
+        Self {
+            base: NonNull::new_unchecked(heap_fns::swift_nonatomic_bridgeObjectRetain(
+                self.base.as_ptr(),
+            )),
+            marker: PhantomData,
+        }
+    }
+
+    /// Performs a [`drop`](Self::drop) with a non-atomic release.
+    ///
+    /// # Safety
+    ///
+    /// Because this operation is non-atomic, it may not synchronize with other
+    /// threads using this object concurrently. If so, this may result in a
+    /// use-after-free.
+    pub unsafe fn drop_nonatomic(self) {
+        let ptr = self.base.as_ptr();
+        mem::forget(self);
+        heap_fns::swift_nonatomic_bridgeObjectRelease(ptr);
     }
 }
 
