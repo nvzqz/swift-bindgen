@@ -8,6 +8,34 @@ use std::os::raw::{c_int, c_void};
 // based on its existence.
 #[link(name = "swiftCore", kind = "dylib")]
 extern "C" {
+    // Bridged Objects
+
+    /// Decrement the strong retain count of a bridged object.
+    pub fn swift_bridgeObjectRelease(obj: *mut c_void);
+
+    /// Decrement the strong retain count of a bridged object by `n`.
+    pub fn swift_bridgeObjectRelease_n(obj: *mut c_void, n: c_int);
+
+    /// Decrement the strong retain count of a bridged object.
+    pub fn swift_nonatomic_bridgeObjectRelease(obj: *mut c_void);
+
+    /// Decrement the strong retain count of a bridged object by `n`.
+    pub fn swift_nonatomic_bridgeObjectRelease_n(obj: *mut c_void, n: c_int);
+
+    /// Increment the strong retain count of a bridged object.
+    pub fn swift_bridgeObjectRetain(obj: *mut c_void) -> *mut c_void;
+
+    /// Increment the strong retain count of a bridged object by `n`.
+    pub fn swift_bridgeObjectRetain_n(obj: *mut c_void, n: c_int) -> *mut c_void;
+
+    /// Increment the strong retain count of a bridged object.
+    pub fn swift_nonatomic_bridgeObjectRetain(obj: *mut c_void) -> *mut c_void;
+
+    /// Increment the strong retain count of a bridged object by `n`.
+    pub fn swift_nonatomic_bridgeObjectRetain_n(obj: *mut c_void, n: c_int) -> *mut c_void;
+
+    // Unknown Objects
+
     /// Increment the strong retain count of an object which might not be a
     /// native Swift object.
     pub fn swift_unknownObjectRetain(obj: *mut c_void) -> *mut c_void;
