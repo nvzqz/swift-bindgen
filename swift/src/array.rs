@@ -67,6 +67,12 @@ impl<T> Default for Array<T> {
     }
 }
 
+impl<T> Default for &Array<T> {
+    fn default() -> Self {
+        Array::empty_ref()
+    }
+}
+
 impl<T> Type for Array<T>
 where
     T: Type,
@@ -131,15 +137,36 @@ impl<T> Array<T> {
     /// See [documentation](https://developer.apple.com/documentation/swift/array/1539784-init).
     #[doc(alias = "init")]
     pub fn new() -> Self {
-        // SAFETY: swiftc emits a single retain call to the global object.
-        unsafe {
-            Self {
-                base: NonNull::new_unchecked(heap_fns::swift_bridgeObjectRetain(
-                    sys::_swiftEmptyArrayStorage.get().cast(),
-                )),
-                marker: PhantomData,
-            }
+        // This emits the same as what swiftc does: a single retain call to the
+        // global object. It even bypasses `EMPTY_REF` since Rust knows it will
+        // never change.
+        Self::empty_ref().clone()
+    }
+
+    /// Returns a global reference to an empty array.
+    ///
+    /// This is useful for keeping an `&Array<T>` arround without multiple
+    /// retain calls to the global object that represents empty arrays.
+    /// [`Array::new`] is the same as calling [`clone`](Self::clone) on this
+    /// value.
+    pub fn empty_ref<'a>() -> &'a Self {
+        #[repr(transparent)]
+        struct EmptyArray {
+            #[allow(unused)]
+            base: NonNull<sys::EmptyArrayStorage>,
         }
+
+        // Required for creating a `static` instance.
+        unsafe impl Sync for EmptyArray {}
+
+        static EMPTY: EmptyArray = unsafe {
+            EmptyArray {
+                base: NonNull::new_unchecked(sys::_swiftEmptyArrayStorage.get()),
+            }
+        };
+
+        // SAFETY: `EmptyArray` has the same repr as any `Array<T>`.
+        unsafe { &*(&EMPTY as *const _ as *const Self) }
     }
 }
 
