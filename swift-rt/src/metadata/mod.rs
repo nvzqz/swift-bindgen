@@ -10,6 +10,7 @@ mod metatype;
 mod response;
 mod struct_;
 mod tuple;
+mod ty;
 
 pub use enum_::*;
 pub use metadata::*;
@@ -17,3 +18,4 @@ pub use metatype::*;
 pub use response::*;
 pub use struct_::*;
 pub use tuple::*;
+pub use ty::*;
