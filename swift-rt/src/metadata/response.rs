@@ -49,6 +49,17 @@ impl fmt::Debug for MetadataResponse {
 }
 
 impl MetadataResponse {
+    /// Returns a completed metadata response from the given value.
+    #[inline]
+    pub const fn from_value(value: &'static Metadata) -> Self {
+        unsafe {
+            Self::from_raw(RawMetadataResponse {
+                value: value.as_raw(),
+                state: MetadataState::COMPLETE,
+            })
+        }
+    }
+
     /// Creates an instance from a raw metadata response value.
     ///
     /// # Safety
