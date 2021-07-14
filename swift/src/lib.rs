@@ -20,6 +20,7 @@ pub use swift_sys as sys;
 pub(crate) mod util;
 
 mod any_object;
+mod array;
 mod never;
 mod object_identifier;
 mod primitive;
@@ -27,6 +28,7 @@ mod ptr;
 mod ty;
 
 pub use any_object::*;
+pub use array::*;
 pub use never::*;
 pub use object_identifier::*;
 pub use primitive::*;
