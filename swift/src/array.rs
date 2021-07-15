@@ -1,3 +1,4 @@
+use crate::Equatable;
 use std::{cell::UnsafeCell, ffi::c_void, marker::PhantomData, mem, ptr::NonNull};
 use swift_rt::metadata::{Metadata, MetadataKind, MetadataResponse, StructMetadata, Type};
 use swift_sys::{
@@ -131,6 +132,17 @@ where
     }
 }
 
+unsafe impl<T: Type + Equatable> Equatable for Array<T> {}
+
+impl<T: Type + Equatable> PartialEq for Array<T> {
+    fn eq(&self, other: &Self) -> bool {
+        // SAFETY: `Equatable` implies `T` has a protocol conformance.
+        unsafe { self.eq_unchecked(other) }
+    }
+}
+
+impl<T: Type + Equatable + Eq> Eq for Array<T> {}
+
 /// Non-atomic memory management.
 impl<T> Array<T> {
     /// Performs a [`clone`](Self::clone) with a non-atomic retain.
@@ -200,6 +212,47 @@ impl<T> Array<T> {
         // SAFETY: `EmptyArray` has the same repr as any `Array<T>`.
         unsafe { &*(&EMPTY as *const _ as *const Self) }
     }
+
+    /// Calls the [`Swift.Equatable`] protocol conformance for [`Swift.Array`]
+    /// without checking if the item type `T` conforms to the protocol.
+    ///
+    /// Use [`eq`](Self::eq) if `T` implements [`Equatable`].
+    ///
+    /// # Safety
+    ///
+    /// The generic type `T` _must_ conform to [`Swift.Equatable`] to be able to
+    /// safely call the following `==` function:
+    ///
+    /// ```swift
+    /// static (extension in Swift):Swift.Array<A where A: Swift.Equatable>.== infix([A], [A]) -> Swift.Bool
+    /// ```
+    ///
+    /// [`Swift.Array`]: https://developer.apple.com/documentation/swift/array
+    /// [`Swift.Equatable`]: https://developer.apple.com/documentation/swift/equatable
+    #[doc(alias = "$sSasSQRzlE2eeoiySbSayxG_ABtFZ")]
+    pub unsafe fn eq_unchecked(&self, other: &Self) -> bool
+    where
+        Self: Type,
+    {
+        // TODO: Enable weak linking for crates that conditionally interop with
+        // Swift based on its existence.
+        #[link(name = "swiftCore", kind = "dylib")]
+        // TODO: `extern "Swift"`
+        extern "C" {
+            #[link_name = "$sSasSQRzlE2eeoiySbSayxG_ABtFZ"]
+            // #[cfg(feature = "link")]
+            fn eq(a: *const c_void, b: *const c_void, metadata: *const Metadata) -> bool;
+        }
+
+        let metadata = Self::get_metadata().as_ref();
+
+        // TODO: Figure out where the `Self` type goes for `[T]`.
+        eq(self.base.as_ptr(), other.base.as_ptr(), metadata)
+    }
+
+    // TODO: `gt_unchecked` that calls `Sequence.lexicographicallyPrecedes`
+    // via `$sSTsSL7ElementRpzrlE25lexicographicallyPrecedesySbqd__STRd__AAQyd__ABRSlF`
+    // using witness table for `$sSayxGSTsMc` (`[T]: Sequence`)
 }
 
 #[cfg(test)]
@@ -230,6 +283,29 @@ mod tests {
             let b = a.clone();
             drop(b);
             drop(a);
+        }
+    }
+
+    #[test]
+    fn eq_new() {
+        macro_rules! imp {
+            ($($ty:ty,)+) => {
+                $({
+                    let a = Array::<$ty>::new();
+                    let b = Array::<$ty>::new();
+
+                    assert!(a == b);
+                })+
+            }
+        }
+
+        // Make sure to keep this in sync with `Equatable` impls.
+        imp! {
+            (),
+            bool,
+            f32, f64,
+            u8, u16, u32, u64, usize,
+            i8, i16, i32, i64, isize,
         }
     }
 

@@ -9,7 +9,8 @@
 /// # Safety
 ///
 /// The implementation of this trait implies that there is an existing protocol
-/// conformance.
+/// conformance. Types like [`Array`](crate::Array) take advantage of this
+/// knowledge at compile-time.
 pub unsafe trait Equatable: PartialEq {}
 
 macro_rules! imp {
@@ -18,6 +19,7 @@ macro_rules! imp {
     };
 }
 
+// Make sure to keep this in sync with `Array` equality tests.
 imp! {
     (),
     bool,
