@@ -33,6 +33,13 @@ pub struct Metadata {
     raw: RawMetadata,
 }
 
+impl AsRef<Metadata> for Metadata {
+    #[inline]
+    fn as_ref(&self) -> &Metadata {
+        self
+    }
+}
+
 impl fmt::Debug for Metadata {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // Format as the specific metadata subtype.
