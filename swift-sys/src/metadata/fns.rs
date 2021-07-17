@@ -41,4 +41,7 @@ extern /* "Swift" */ {
     ///
     /// **Swift:** 5.3
     pub fn swift_getMangledTypeName(ty: *const Metadata) -> TypeNamePair;
+
+    /// Returns the context descriptor for a type metadata.
+    pub fn swift_getTypeContextDescriptor(ty: *const Metadata) -> *const TypeContextDescriptor;
 }

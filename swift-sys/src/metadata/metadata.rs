@@ -68,12 +68,16 @@ impl Metadata {
         this.cast::<*const ValueWitnessTable>().wrapping_sub(1)
     }
 
-    /// Returns a pointer to the type descriptor pointer from the pointer
-    /// to type metadata.
+    /// Returns a pointer to the type descripton from the pointer to type
+    /// metadata.
+    ///
+    /// # Safety
+    ///
+    /// The raw pointer must reference valid type metadata.
     #[inline]
-    pub fn type_descriptor_ptr(this: *const Self) -> *const *const TypeContextDescriptor {
-        // The descriptor is at a single pointer offset after the metadata.
-        this.cast::<*const TypeContextDescriptor>().wrapping_add(1)
+    #[doc(alias = "swift_getTypeContextDescriptor")]
+    pub unsafe fn type_descriptor(this: *const Self) -> *const TypeContextDescriptor {
+        fns::swift_getTypeContextDescriptor(this)
     }
 
     /// Returns the kind of this metadata.

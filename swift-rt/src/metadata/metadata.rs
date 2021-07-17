@@ -13,6 +13,10 @@ use swift_sys::metadata::{
     EnumValueWitnessTable, Metadata as RawMetadata, MetadataRequest, ValueWitnessTable,
 };
 
+// Used for simplifying doc comments.
+#[allow(unused_imports)]
+use swift_sys::metadata::fns::swift_getTypeContextDescriptor;
+
 /// Type metadata.
 ///
 /// # Debug formatting
@@ -194,21 +198,22 @@ impl Metadata {
         }
     }
 
-    /// Returns a pointer to the type descriptor pointer from the pointer
-    /// metadata.
-    #[inline]
-    fn type_descriptor_ptr(this: *const Self) -> *const *const TypeContextDescriptor {
-        RawMetadata::type_descriptor_ptr(this.cast()).cast()
-    }
-
     /// Returns a reference to the nominal type descriptor if this metadata
     /// represents a nominal type.
+    ///
+    /// To ensure forward compatibility with future Swift versions, this calls
+    /// the [`swift_getTypeContextDescriptor`] runtime function. Specialized
+    /// versions of this function, like [`StructMetadata::type_descriptor`], may
+    /// be optimized to instead perform direct field access.
     #[inline]
+    #[doc(alias = "swift_getTypeContextDescriptor")]
     pub fn type_descriptor(&self) -> Option<&TypeContextDescriptor> {
-        if self.kind().is_nominal_type() {
-            unsafe { (*Self::type_descriptor_ptr(self)).as_ref() }
-        } else {
-            None
+        // SAFETY: `self` refers to valid type metadata, and thus the runtime
+        // function should return a correct nullable value.
+        unsafe {
+            RawMetadata::type_descriptor(self.as_raw())
+                .cast::<TypeContextDescriptor>()
+                .as_ref()
         }
     }
 }
