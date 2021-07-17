@@ -11,5 +11,5 @@ pub struct StructMetadata {
     pub base: Metadata,
 
     /// An out-of-line description of the type.
-    pub description: *const StructDescriptor,
+    pub type_descriptor: *const StructDescriptor,
 }

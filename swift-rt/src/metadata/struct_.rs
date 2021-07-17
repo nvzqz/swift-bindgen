@@ -26,7 +26,7 @@ impl fmt::Debug for StructMetadata {
         f.debug_struct("StructMetadata")
             .field("kind", &self.as_metadata().kind())
             .field("value_witnesses", self.value_witnesses())
-            .field("description", self.description())
+            .field("type_descriptor", self.type_descriptor())
             .finish()
     }
 }
@@ -65,11 +65,11 @@ impl StructMetadata {
     /// of metadata indicated by `kind`. This includes the value-witness table
     /// that is placed immediately before the created instance.
     #[inline]
-    pub const unsafe fn new(description: *const StructDescriptor) -> Self {
+    pub const unsafe fn new(type_descriptor: *const StructDescriptor) -> Self {
         Self {
             raw: RawStructMetadata {
                 base: Metadata::new(MetadataKind::STRUCT.value() as usize).into_raw(),
-                description: description.cast(),
+                type_descriptor: type_descriptor.cast(),
             },
         }
     }
@@ -88,7 +88,7 @@ impl StructMetadata {
 
     /// Returns an out-of-line description of the type.
     #[inline]
-    pub fn description(&self) -> &StructDescriptor {
-        unsafe { &*self.raw.description.cast() }
+    pub fn type_descriptor(&self) -> &StructDescriptor {
+        unsafe { &*self.raw.type_descriptor.cast() }
     }
 }

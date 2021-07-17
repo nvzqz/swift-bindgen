@@ -26,7 +26,7 @@ impl fmt::Debug for EnumMetadata {
         f.debug_struct("EnumMetadata")
             .field("kind", &self.as_metadata().kind())
             .field("value_witnesses", self.value_witnesses())
-            .field("description", self.description())
+            .field("type_descriptor", self.type_descriptor())
             .finish()
     }
 }
@@ -65,11 +65,11 @@ impl EnumMetadata {
     /// of metadata indicated by `kind`. This includes the value-witness table
     /// that is placed immediately before the created instance.
     #[inline]
-    pub const unsafe fn new(description: *const EnumDescriptor) -> Self {
+    pub const unsafe fn new(type_descriptor: *const EnumDescriptor) -> Self {
         Self {
             raw: RawEnumMetadata {
                 base: Metadata::new(MetadataKind::ENUM.value() as usize).into_raw(),
-                description: description.cast(),
+                type_descriptor: type_descriptor.cast(),
             },
         }
     }
@@ -96,7 +96,7 @@ impl EnumMetadata {
                 .flags
                 .has_enum_witnesses(),
             "missing enum value witnesses for {:?} enum metadata",
-            self.description().name(),
+            self.type_descriptor().name(),
         );
 
         unsafe { &**Self::value_witness_table_ptr(self) }
@@ -104,8 +104,8 @@ impl EnumMetadata {
 
     /// Returns an out-of-line description of the type.
     #[inline]
-    pub fn description(&self) -> &EnumDescriptor {
-        unsafe { &*self.raw.description.cast() }
+    pub fn type_descriptor(&self) -> &EnumDescriptor {
+        unsafe { &*self.raw.type_descriptor.cast() }
     }
 }
 

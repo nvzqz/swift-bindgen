@@ -11,5 +11,5 @@ pub struct EnumMetadata {
     pub base: Metadata,
 
     /// An out-of-line description of the type.
-    pub description: *const EnumDescriptor,
+    pub type_descriptor: *const EnumDescriptor,
 }
