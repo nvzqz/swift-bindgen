@@ -23,7 +23,7 @@ pub struct ValueWitnessTable {
     /// ```
     pub initialize_buffer_with_copy_of_buffer: unsafe extern "C" fn(
         dest: *mut c_void,
-        src: *mut c_void,
+        src: *const c_void,
         self_: *const c_void,
     ) -> *mut c_void,
 
@@ -48,7 +48,7 @@ pub struct ValueWitnessTable {
     /// ```
     pub initialize_with_copy: unsafe extern "C" fn(
         dest: *mut c_void,
-        src: *mut c_void,
+        src: *const c_void,
         self_: *const c_void,
     ) -> *mut c_void,
 
@@ -62,7 +62,7 @@ pub struct ValueWitnessTable {
     /// ```
     pub assign_with_copy: unsafe extern "C" fn(
         dest: *mut c_void,
-        src: *mut c_void,
+        src: *const c_void,
         self_: *const c_void,
     ) -> *mut c_void,
 
@@ -194,7 +194,7 @@ impl ValueWitnessTable {
     pub unsafe fn initialize_buffer_with_copy_of_buffer<M, T, B>(
         &self,
         dest: *mut B,
-        src: *mut B,
+        src: *const B,
         self_: *const M,
     ) -> *mut T
     where
@@ -220,7 +220,7 @@ impl ValueWitnessTable {
     pub unsafe fn initialize_with_copy<M, T>(
         &self,
         dest: *mut T,
-        src: *mut T,
+        src: *const T,
         self_: *const M,
     ) -> *mut T
     where
@@ -235,7 +235,7 @@ impl ValueWitnessTable {
     pub unsafe fn assign_with_copy<M, T>(
         &self,
         dest: *mut T,
-        src: *mut T,
+        src: *const T,
         self_: *const M,
     ) -> *mut T
     where

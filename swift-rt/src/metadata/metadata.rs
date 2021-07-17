@@ -304,14 +304,14 @@ impl Metadata {
     /// A generic wrapper over
     /// [the value-witness function](ValueWitnessTable#structfield.initialize_with_copy).
     #[inline(always)]
-    pub unsafe fn vw_initialize_with_copy<T>(&self, dest: *mut T, src: *mut T) -> *mut T {
+    pub unsafe fn vw_initialize_with_copy<T>(&self, dest: *mut T, src: *const T) -> *mut T {
         self.value_witnesses().initialize_with_copy(dest, src, self)
     }
 
     /// A generic wrapper over
     /// [the value-witness function](ValueWitnessTable#structfield.assign_with_copy).
     #[inline(always)]
-    pub unsafe fn vw_assign_with_copy<T>(&self, dest: *mut T, src: *mut T) -> *mut T {
+    pub unsafe fn vw_assign_with_copy<T>(&self, dest: *mut T, src: *const T) -> *mut T {
         self.value_witnesses().assign_with_copy(dest, src, self)
     }
 
