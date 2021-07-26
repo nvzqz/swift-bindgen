@@ -258,6 +258,7 @@ impl<T> Array<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::String as SwiftString;
 
     #[test]
     fn drop_new() {
@@ -331,6 +332,7 @@ mod tests {
             }
         }
 
+        // Primitives.
         test::<()>("()");
         test::<bool>("Swift.Bool");
         test::<isize>("Swift.Int");
@@ -339,5 +341,8 @@ mod tests {
         test::<u64>("Swift.UInt64");
         test::<f32>("Swift.Float");
         test::<f64>("Swift.Double");
+
+        // Standard library types.
+        test::<SwiftString>("Swift.String");
     }
 }

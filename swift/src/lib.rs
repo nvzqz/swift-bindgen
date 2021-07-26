@@ -26,6 +26,7 @@ mod never;
 mod object_identifier;
 mod primitive;
 mod ptr;
+mod string;
 mod ty;
 
 pub use any_object::*;
@@ -35,4 +36,5 @@ pub use never::*;
 pub use object_identifier::*;
 pub use primitive::*;
 pub use ptr::*;
+pub use string::*;
 pub use ty::*;
