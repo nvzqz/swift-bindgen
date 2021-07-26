@@ -302,11 +302,15 @@ mod tests {
 
         // Make sure to keep this in sync with `Equatable` impls.
         imp! {
+            // Primitives.
             (),
             bool,
             f32, f64,
             u8, u16, u32, u64, usize,
             i8, i16, i32, i64, isize,
+
+            // Standard library types.
+            SwiftString,
         }
     }
 

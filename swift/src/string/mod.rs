@@ -1,6 +1,8 @@
 use std::mem::MaybeUninit;
 use swift_rt::metadata::{StructMetadata, Type};
 
+mod cmp;
+
 /// A Unicode string value that is a collection of characters.
 ///
 /// See [documentation](https://developer.apple.com/documentation/swift/string).
