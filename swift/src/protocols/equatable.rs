@@ -2,7 +2,10 @@
 ///
 /// This trait is similar to [`PartialEq`] in that it requires an equality
 /// function to be implemented, and so it requires [`PartialEq`]. This trait
-/// _does not_ require [`Eq`] because.
+/// _does not_ require [`Eq`] because `Equatable` does not require
+/// [equivalence relation](https://en.wikipedia.org/wiki/Equivalence_relation);
+/// only
+/// [partial equivalence relation](https://en.wikipedia.org/wiki/Partial_equivalence_relation).
 ///
 /// See [documentation](https://developer.apple.com/documentation/swift/equatable).
 ///
