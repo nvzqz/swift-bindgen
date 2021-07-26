@@ -21,20 +21,20 @@ pub(crate) mod util;
 
 mod any_object;
 mod array;
-mod eq;
 mod never;
 mod object_identifier;
 mod primitive;
+mod protocols;
 mod ptr;
 mod string;
 mod ty;
 
 pub use any_object::*;
 pub use array::*;
-pub use eq::*;
 pub use never::*;
 pub use object_identifier::*;
 pub use primitive::*;
+pub use protocols::*;
 pub use ptr::*;
 pub use string::*;
 pub use ty::*;
