@@ -1,5 +1,5 @@
-use crate::{Comparable, Equatable, String};
-use std::{cmp::Ordering, mem::ManuallyDrop, ptr};
+use crate::{util::BitPattern, Comparable, Equatable, String};
+use std::cmp::Ordering;
 
 // SAFETY: String implements Equatable and Comparable.
 //
@@ -24,21 +24,17 @@ mod funcs {
         // implemented in terms of these.
 
         #[link_name = "$sSS2eeoiySbSS_SStFZ"]
-        pub fn eq(lhs: ManuallyDrop<String>, rhs: ManuallyDrop<String>) -> bool;
+        pub(crate) fn eq(lhs: BitPattern<String>, rhs: BitPattern<String>) -> bool;
 
         #[link_name = "$sSS1loiySbSS_SStFZ"]
-        pub fn lt(lhs: ManuallyDrop<String>, rhs: ManuallyDrop<String>) -> bool;
+        pub(crate) fn lt(lhs: BitPattern<String>, rhs: BitPattern<String>) -> bool;
     }
 }
 
 impl PartialEq for String {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        unsafe {
-            let lhs = ManuallyDrop::new(ptr::read(self));
-            let rhs = ManuallyDrop::new(ptr::read(other));
-            funcs::eq(lhs, rhs)
-        }
+        unsafe { funcs::eq(self.into(), other.into()) }
     }
 }
 
@@ -52,11 +48,7 @@ impl PartialOrd for String {
 
     #[inline]
     fn lt(&self, other: &Self) -> bool {
-        unsafe {
-            let lhs = ManuallyDrop::new(ptr::read(self));
-            let rhs = ManuallyDrop::new(ptr::read(other));
-            funcs::lt(lhs, rhs)
-        }
+        unsafe { funcs::lt(self.into(), other.into()) }
     }
 
     #[inline]
