@@ -1,3 +1,4 @@
+use crate::{util::BitPattern, Int};
 use std::mem::MaybeUninit;
 use swift_rt::metadata::{StructMetadata, Type};
 
@@ -70,6 +71,22 @@ impl String {
             // TODO: Verify and test against big-endian and 32-bit.
             raw_bits: [0, 0xE000000000000000],
         }
+    }
+
+    /// Creates a new string representing the given string repeated the
+    /// specified number of times.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/swift/string/2427723-init).
+    #[inline]
+    #[doc(alias = "init(repeating:count:)")]
+    pub fn repeating(value: &Self, count: Int) -> Self {
+        #[link(name = "swiftCore", kind = "dylib")]
+        extern "C" {
+            #[link_name = "$sSS9repeating5countS2S_SitcfC"]
+            fn init_repeating(value: BitPattern<String>, count: Int) -> String;
+        }
+
+        unsafe { init_repeating(value.into(), count) }
     }
 }
 

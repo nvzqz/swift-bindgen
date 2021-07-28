@@ -90,4 +90,19 @@ mod tests {
         assert!(String::new() <= String::new());
         assert!(String::new() >= String::new());
     }
+
+    #[test]
+    fn eq_repeating_empty() {
+        // TODO: Test `String::repeating` against non-empty values.
+
+        let empty = String::new();
+
+        for count in 0..100 {
+            let result = String::repeating(&empty, count);
+
+            assert!(result == empty);
+            assert!(result <= empty);
+            assert!(result >= empty);
+        }
+    }
 }
