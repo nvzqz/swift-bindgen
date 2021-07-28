@@ -14,6 +14,7 @@ pub struct String {
 }
 
 impl Drop for String {
+    #[inline]
     fn drop(&mut self) {
         let metadata = Self::get_metadata().as_metadata();
 
@@ -22,6 +23,7 @@ impl Drop for String {
 }
 
 impl Clone for String {
+    #[inline]
     fn clone(&self) -> Self {
         let metadata = Self::get_metadata().as_metadata();
 
