@@ -90,6 +90,36 @@ impl String {
 
         unsafe { init_repeating(value.into(), count) }
     }
+
+    /// Returns the number of characters in this string.
+    ///
+    /// Unlike Rust's [`str::len`], this does not return the number of bytes.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/swift/string/3003522-count).
+    #[inline]
+    pub fn count(&self) -> Int {
+        #[link(name = "swiftCore", kind = "dylib")]
+        extern "C" {
+            #[link_name = "$sSS5countSivg"]
+            fn count(value: BitPattern<String>) -> Int;
+        }
+
+        unsafe { count(self.into()) }
+    }
+
+    /// Returns whether this string has no characters.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/swift/string/2946268-isempty).
+    #[inline]
+    #[doc(alias = "isEmpty")]
+    pub fn is_empty(&self) -> bool {
+        #[link(name = "swiftCore", kind = "dylib")]
+        extern "C" {
+            #[link_name = "$sSS7isEmptySbvg"]
+            fn is_empty(value: BitPattern<String>) -> bool;
+        }
+        unsafe { is_empty(self.into()) }
+    }
 }
 
 #[cfg(test)]
@@ -121,5 +151,15 @@ mod tests {
             drop(b);
             drop(a);
         }
+    }
+
+    #[test]
+    fn count() {
+        assert_eq!(String::new().count(), 0);
+    }
+
+    #[test]
+    fn is_empty() {
+        assert!(String::new().is_empty());
     }
 }
