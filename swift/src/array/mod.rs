@@ -1,5 +1,5 @@
 use crate::Equatable;
-use std::{cell::UnsafeCell, ffi::c_void, marker::PhantomData, mem, ptr::NonNull};
+use std::{ffi::c_void, marker::PhantomData, mem, ptr::NonNull};
 use swift_rt::metadata::{Metadata, MetadataKind, MetadataResponse, StructMetadata, Type};
 use swift_sys::{
     heap::fns as heap_fns,
@@ -9,18 +9,11 @@ use swift_sys::{
 mod sys {
     use super::*;
 
-    #[repr(C)]
-    pub struct EmptyArrayStorage {
-        opaque: [u8; 0],
-    }
-
     // TODO: Enable weak linking for crates that conditionally interop with
     // Swift based on its existence.
     #[link(name = "swiftCore", kind = "dylib")]
     // #[cfg(feature = "link")]
     extern "C" {
-        pub static _swiftEmptyArrayStorage: UnsafeCell<EmptyArrayStorage>;
-
         #[link_name = "$sSaMa"]
         pub fn array_metadata_accessor(
             request: MetadataRequest,
@@ -28,6 +21,10 @@ mod sys {
         ) -> MetadataResponse;
     }
 }
+
+mod empty;
+
+use empty::EmptyArray;
 
 /// An ordered, random-access collection.
 ///
@@ -194,23 +191,8 @@ impl<T> Array<T> {
     /// [`Array::new`] is the same as calling [`clone`](Self::clone) on this
     /// value.
     pub fn empty_ref<'a>() -> &'a Self {
-        #[repr(transparent)]
-        struct EmptyArray {
-            #[allow(unused)]
-            base: NonNull<sys::EmptyArrayStorage>,
-        }
-
-        // Required for creating a `static` instance.
-        unsafe impl Sync for EmptyArray {}
-
-        static EMPTY: EmptyArray = unsafe {
-            EmptyArray {
-                base: NonNull::new_unchecked(sys::_swiftEmptyArrayStorage.get()),
-            }
-        };
-
         // SAFETY: `EmptyArray` has the same repr as any `Array<T>`.
-        unsafe { &*(&EMPTY as *const _ as *const Self) }
+        unsafe { &*(EmptyArray::empty_ref() as *const _ as *const Self) }
     }
 
     /// Calls the [`Swift.Equatable`] protocol conformance for [`Swift.Array`]
