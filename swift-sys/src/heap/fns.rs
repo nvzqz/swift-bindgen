@@ -10,18 +10,6 @@ use std::os::raw::{c_int, c_void};
 extern "C" {
     // Bridged Objects
 
-    /// Decrement the strong retain count of a bridged object.
-    pub fn swift_bridgeObjectRelease(obj: *mut c_void);
-
-    /// Decrement the strong retain count of a bridged object by `n`.
-    pub fn swift_bridgeObjectRelease_n(obj: *mut c_void, n: c_int);
-
-    /// Decrement the strong retain count of a bridged object.
-    pub fn swift_nonatomic_bridgeObjectRelease(obj: *mut c_void);
-
-    /// Decrement the strong retain count of a bridged object by `n`.
-    pub fn swift_nonatomic_bridgeObjectRelease_n(obj: *mut c_void, n: c_int);
-
     /// Increment the strong retain count of a bridged object.
     pub fn swift_bridgeObjectRetain(obj: *mut c_void) -> *mut c_void;
 
@@ -33,6 +21,18 @@ extern "C" {
 
     /// Increment the strong retain count of a bridged object by `n`.
     pub fn swift_nonatomic_bridgeObjectRetain_n(obj: *mut c_void, n: c_int) -> *mut c_void;
+
+    /// Decrement the strong retain count of a bridged object.
+    pub fn swift_bridgeObjectRelease(obj: *mut c_void);
+
+    /// Decrement the strong retain count of a bridged object by `n`.
+    pub fn swift_bridgeObjectRelease_n(obj: *mut c_void, n: c_int);
+
+    /// Decrement the strong retain count of a bridged object.
+    pub fn swift_nonatomic_bridgeObjectRelease(obj: *mut c_void);
+
+    /// Decrement the strong retain count of a bridged object by `n`.
+    pub fn swift_nonatomic_bridgeObjectRelease_n(obj: *mut c_void, n: c_int);
 
     // Unknown Objects
 
