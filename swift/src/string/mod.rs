@@ -1,5 +1,5 @@
 use crate::{util::BitPattern, Int};
-use std::mem::MaybeUninit;
+use std::{ffi::CStr, mem::MaybeUninit, os::raw::c_char};
 use swift_rt::metadata::{StructMetadata, Type};
 
 mod cmp;
@@ -76,6 +76,13 @@ impl From<char> for String {
     }
 }
 
+impl From<&CStr> for String {
+    #[inline]
+    fn from(cstr: &CStr) -> Self {
+        Self::from_cstr(cstr)
+    }
+}
+
 impl String {
     /// Creates a new, empty string.
     ///
@@ -104,6 +111,38 @@ impl String {
         }
 
         unsafe { init_repeating(value.into(), count) }
+    }
+
+    /// Creates a new string by copying the null-terminated UTF-8 data
+    /// referenced by the given C string slice.
+    ///
+    /// If the given C string contains ill-formed UTF-8 code unit sequences,
+    /// this initializer replaces them with the Unicode replacement character
+    /// (U+FFFD).
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/swift/string/1641523-init).
+    #[inline]
+    #[doc(alias = "init(cString:)")]
+    pub fn from_cstr(cstr: &CStr) -> Self {
+        unsafe { Self::from_cstr_ptr(cstr.as_ptr()) }
+    }
+
+    /// Creates a new string by copying the null-terminated UTF-8 data
+    /// referenced by the given C string pointer.
+    ///
+    /// See [`String::from_cstr`] for details.
+    ///
+    /// See [documentation](https://developer.apple.com/documentation/swift/string/1641523-init).
+    #[inline]
+    #[doc(alias = "init(cString:)")]
+    pub unsafe fn from_cstr_ptr(cstr: *const c_char) -> Self {
+        #[link(name = "swiftCore", kind = "dylib")]
+        extern "C" {
+            #[link_name = "$sSS7cStringSSSPys4Int8VG_tcfC"]
+            fn init_cstring(cstr: *const c_char) -> String;
+        }
+
+        init_cstring(cstr)
     }
 
     /// Returns the number of characters in this string.
@@ -182,5 +221,20 @@ mod tests {
     #[test]
     fn is_empty() {
         assert!(String::new().is_empty());
+    }
+
+    #[test]
+    fn from_cstr() {
+        let strings = ["\0", "1\0", "12\0", "123\0"];
+
+        for &s in strings.iter() {
+            let cstr = CStr::from_bytes_with_nul(s.as_bytes()).unwrap();
+            let string = String::from_cstr(cstr);
+
+            // TODO: Replace with `assert_eq!(string, s);` once `String`
+            // implements `PartialEq<str>`.
+            let expected_len = s.len() as Int - 1;
+            assert_eq!(string.count(), expected_len);
+        }
     }
 }
