@@ -61,6 +61,21 @@ impl Default for String {
     }
 }
 
+impl From<char> for String {
+    #[inline]
+    fn from(unicode_scalar: char) -> Self {
+        // TODO: Implement inline from `_uncheckedFromUTF8` implementation.
+
+        #[link(name = "swiftCore", kind = "dylib")]
+        extern "C" {
+            #[link_name = "$sSSySSs7UnicodeO6ScalarVcfC"]
+            fn init_unicode_scalar(unicode_scalar: u32) -> String;
+        }
+
+        unsafe { init_unicode_scalar(unicode_scalar.into()) }
+    }
+}
+
 impl String {
     /// Creates a new, empty string.
     ///
@@ -156,6 +171,12 @@ mod tests {
     #[test]
     fn count() {
         assert_eq!(String::new().count(), 0);
+
+        // Test count from repeating a single character.
+        let single = String::from('a');
+        for n in 0..100 {
+            assert_eq!(String::repeating(&single, n).count(), n);
+        }
     }
 
     #[test]
