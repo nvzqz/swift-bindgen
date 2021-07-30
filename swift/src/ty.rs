@@ -63,8 +63,8 @@ impl AnyType {
 
     /// Returns this type as a class if it is one.
     #[inline]
-    pub fn to_class(self) -> Option<AnyClass> {
-        if self.is_class() {
+    pub fn to_any_class(self) -> Option<AnyClass> {
+        if self.is_any_class() {
             Some(AnyClass(self))
         } else {
             None
@@ -73,7 +73,7 @@ impl AnyType {
 
     /// Returns `true` if this type refers to any kind of class.
     #[inline]
-    pub fn is_class(self) -> bool {
+    pub fn is_any_class(self) -> bool {
         self.metadata().kind().is_any_kind_of_class()
     }
 
@@ -109,6 +109,24 @@ impl AnyType {
     #[doc(alias = "swift_dynamicCastMetatype")]
     pub fn is_ty(self, other: AnyType) -> bool {
         self.as_ty(other).is_some()
+    }
+
+    /// Returns this type as a kind of `other`.
+    ///
+    /// This is equivalent to `self as? T.Type` in Swift.
+    #[inline]
+    #[doc(alias = "swift_dynamicCastMetatype")]
+    pub fn as_class(self, other: AnyClass) -> Option<AnyClass> {
+        Some(AnyClass(self.as_ty(other.0)?))
+    }
+
+    /// Returns `true` if this type as a kind of `other`.
+    ///
+    /// This is equivalent to `self is T.Type` in Swift.
+    #[inline]
+    #[doc(alias = "swift_dynamicCastMetatype")]
+    pub fn is_class(self, other: AnyClass) -> bool {
+        self.as_class(other).is_some()
     }
 }
 
@@ -191,5 +209,23 @@ impl AnyClass {
     #[doc(alias = "swift_dynamicCastMetatype")]
     pub fn is_ty(self, other: AnyType) -> bool {
         self.0.is_ty(other)
+    }
+
+    /// Returns this type as a kind of `other`.
+    ///
+    /// This is equivalent to `self as? T.Type` in Swift.
+    #[inline]
+    #[doc(alias = "swift_dynamicCastMetatype")]
+    pub fn as_class(self, other: AnyClass) -> Option<AnyClass> {
+        self.0.as_class(other)
+    }
+
+    /// Returns `true` if this type as a kind of `other`.
+    ///
+    /// This is equivalent to `self is T.Type` in Swift.
+    #[inline]
+    #[doc(alias = "swift_dynamicCastMetatype")]
+    pub fn is_class(self, other: AnyClass) -> bool {
+        self.0.is_class(other)
     }
 }
