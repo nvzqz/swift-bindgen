@@ -17,4 +17,10 @@ extern "C" {
     ///
     /// The object pointer may be a tagged pointer, but cannot be null.
     pub fn swift_getObjectType(obj: *const OpaqueValue) -> *const Metadata;
+
+    /// Conditionally casts the source type to the target type.
+    pub fn swift_dynamicCastMetatype(
+        source_ty: *const Metadata,
+        target_ty: *const Metadata,
+    ) -> *const Metadata;
 }

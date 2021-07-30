@@ -1,5 +1,6 @@
 use std::{fmt, ptr::NonNull};
 use swift_rt::metadata::{Metadata, MetadataKind};
+use swift_sys::casting;
 
 /// The metatype for [`Any`](crate::Any), also known as `Any.Type`.
 #[repr(transparent)]
@@ -84,6 +85,33 @@ impl AnyType {
     }
 }
 
+/// Type casting.
+impl AnyType {
+    /// Returns this type as a kind of `other`.
+    ///
+    /// This is equivalent to `self as? T.Type` in Swift.
+    #[inline]
+    #[doc(alias = "swift_dynamicCastMetatype")]
+    pub fn as_ty(self, other: AnyType) -> Option<AnyType> {
+        unsafe {
+            let result = casting::swift_dynamicCastMetatype(
+                self.metadata().as_raw(),
+                other.metadata().as_raw(),
+            );
+            Some(AnyType(NonNull::new(result as *mut Metadata)?))
+        }
+    }
+
+    /// Returns `true` if this type as a kind of `other`.
+    ///
+    /// This is equivalent to `self is T.Type` in Swift.
+    #[inline]
+    #[doc(alias = "swift_dynamicCastMetatype")]
+    pub fn is_ty(self, other: AnyType) -> bool {
+        self.as_ty(other).is_some()
+    }
+}
+
 /// The protocol to which all class types implicitly conform.
 ///
 /// See [documentation](https://developer.apple.com/documentation/swift/anyclass).
@@ -142,5 +170,26 @@ impl AnyClass {
     #[doc(alias = "swift_getMangledTypeName")]
     pub fn mangled_name(&self) -> &'static str {
         self.0.mangled_name()
+    }
+}
+
+/// Type casting.
+impl AnyClass {
+    /// Returns this type as a kind of `other`.
+    ///
+    /// This is equivalent to `self as? T.Type` in Swift.
+    #[inline]
+    #[doc(alias = "swift_dynamicCastMetatype")]
+    pub fn as_ty(self, other: AnyType) -> Option<AnyType> {
+        self.0.as_ty(other)
+    }
+
+    /// Returns `true` if this type as a kind of `other`.
+    ///
+    /// This is equivalent to `self is T.Type` in Swift.
+    #[inline]
+    #[doc(alias = "swift_dynamicCastMetatype")]
+    pub fn is_ty(self, other: AnyType) -> bool {
+        self.0.is_ty(other)
     }
 }
