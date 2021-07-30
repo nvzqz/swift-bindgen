@@ -3,7 +3,7 @@ use swift_rt::metadata::{Metadata, MetadataKind};
 
 /// The metatype for [`Any`](crate::Any), also known as `Any.Type`.
 #[repr(transparent)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy)]
 pub struct AnyType(
     // TODO: Use pointer type that takes advantage of
     // `_swift_abi_LeastValidPointerValue`.
@@ -13,6 +13,13 @@ pub struct AnyType(
 // SAFETY: The data referenced by the pointer is globally accessible.
 unsafe impl Send for AnyType {}
 unsafe impl Sync for AnyType {}
+
+impl fmt::Debug for AnyType {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_tuple("AnyType").field(&self.name(true)).finish()
+    }
+}
 
 impl AnyType {
     #[inline]
@@ -92,8 +99,9 @@ impl From<AnyClass> for AnyType {
 }
 
 impl fmt::Debug for AnyClass {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.debug_tuple("AnyClass").field(&(self.0).0).finish()
+        f.debug_tuple("AnyClass").field(&self.name(true)).finish()
     }
 }
 
