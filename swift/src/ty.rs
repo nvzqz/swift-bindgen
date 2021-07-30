@@ -21,6 +21,13 @@ impl fmt::Debug for AnyType {
     }
 }
 
+impl fmt::Display for AnyType {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str(self.name(true))
+    }
+}
+
 impl AnyType {
     #[inline]
     pub(crate) unsafe fn from_metadata(ty: NonNull<Metadata>) -> Self {
@@ -102,6 +109,13 @@ impl fmt::Debug for AnyClass {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_tuple("AnyClass").field(&self.name(true)).finish()
+    }
+}
+
+impl fmt::Display for AnyClass {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str(self.name(false))
     }
 }
 
