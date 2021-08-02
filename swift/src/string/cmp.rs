@@ -58,7 +58,7 @@ impl PartialOrd for String {
 
     #[inline]
     fn gt(&self, other: &Self) -> bool {
-        other > self
+        other < self
     }
 
     #[inline]
