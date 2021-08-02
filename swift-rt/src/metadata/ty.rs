@@ -12,7 +12,7 @@ use swift_sys::metadata::ValueWitnessTable;
 /// as cheap as having values be emitted directly in the Rust binary.
 pub trait Type {
     /// The specific runtime metadata type for `Self`.
-    type Metadata: AsRef<Metadata>;
+    type Metadata: 'static + AsRef<Metadata>;
 
     /// A shorthand for [`ValueWitnessTable::is_pod`] that enables compile-time
     /// optimization if a constant value is provided.
@@ -29,21 +29,18 @@ pub trait Type {
             .is_bitwise_takable()
     }
 
-    // Note that `'a` is used in order to make the above convenience functions
-    // work without `Metadata: 'static`.
-
     /// Requests the runtime metadata for this static type, potentially blocking
     /// until the type is completely defined by the runtime.
     ///
     /// For runtime types known at compile-time this should simply reference its
     /// symbol directly, such as `$sSbN` for `bool`.
-    fn get_metadata<'a>() -> &'a Self::Metadata;
+    fn get_metadata() -> &'static Self::Metadata;
 
     /// Requests the runtime metadata for this static type.
     ///
     /// If `blocking` is `true`, this is the same as calling
     /// [`Self::get_metadata`].
-    fn get_metadata_blocking<'a>(blocking: bool) -> Option<&'a Self::Metadata>;
+    fn get_metadata_blocking(blocking: bool) -> Option<&'static Self::Metadata>;
 }
 
 // TODO: Use `swift_getTupleTypeMetadata2` for 2-ary tuples.
@@ -67,7 +64,7 @@ macro_rules! imp_static {
                 }
 
                 #[inline]
-                fn get_metadata<'a>() -> &'a $metadata_ty {
+                fn get_metadata() -> &'static $metadata_ty {
                     extern "C" {
                         #[link_name = $sym]
                         static METADATA: $metadata_ty;
@@ -76,7 +73,7 @@ macro_rules! imp_static {
                 }
 
                 #[inline]
-                fn get_metadata_blocking<'a>(_blocking: bool) -> Option<&'a $metadata_ty> {
+                fn get_metadata_blocking(_blocking: bool) -> Option<&'static $metadata_ty> {
                     Some(Self::get_metadata())
                 }
             }
@@ -98,7 +95,7 @@ impl Type for () {
     }
 
     #[inline]
-    fn get_metadata<'a>() -> &'a TupleMetadata {
+    fn get_metadata() -> &'static TupleMetadata {
         // TODO: Expose full metadata type.
         #[repr(C)]
         struct FullMetadata {
@@ -114,7 +111,7 @@ impl Type for () {
     }
 
     #[inline]
-    fn get_metadata_blocking<'a>(_blocking: bool) -> Option<&'a TupleMetadata> {
+    fn get_metadata_blocking(_blocking: bool) -> Option<&'static TupleMetadata> {
         Some(Self::get_metadata())
     }
 }

@@ -39,7 +39,7 @@ impl Type for String {
     type Metadata = StructMetadata;
 
     #[inline]
-    fn get_metadata<'a>() -> &'a Self::Metadata {
+    fn get_metadata() -> &'static Self::Metadata {
         extern "C" {
             #[link_name = "$sSSN"]
             static METADATA: StructMetadata;
@@ -49,7 +49,7 @@ impl Type for String {
     }
 
     #[inline]
-    fn get_metadata_blocking<'a>(_blocking: bool) -> Option<&'a Self::Metadata> {
+    fn get_metadata_blocking(_blocking: bool) -> Option<&'static Self::Metadata> {
         Some(Self::get_metadata())
     }
 }

@@ -78,7 +78,7 @@ where
     type Metadata = StructMetadata;
 
     #[doc(alias = "$sSaMa")]
-    fn get_metadata<'a>() -> &'a StructMetadata {
+    fn get_metadata() -> &'static StructMetadata {
         let item_metadata = T::get_metadata().as_ref();
         let request = MetadataRequest::blocking(MetadataState::COMPLETE);
 
@@ -107,7 +107,7 @@ where
     }
 
     #[doc(alias = "$sSaMa")]
-    fn get_metadata_blocking<'a>(blocking: bool) -> Option<&'a StructMetadata> {
+    fn get_metadata_blocking(blocking: bool) -> Option<&'static StructMetadata> {
         let item_metadata = T::get_metadata_blocking(blocking)?.as_ref();
         let request = MetadataRequest::new(MetadataState::COMPLETE, !blocking);
 
