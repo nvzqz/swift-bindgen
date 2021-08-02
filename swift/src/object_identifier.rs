@@ -1,3 +1,5 @@
+use swift_rt::metadata::{StructMetadata, Type};
+
 use crate::{AnyObject, Int, UInt};
 use std::{ffi::c_void, ptr::NonNull};
 
@@ -19,6 +21,34 @@ impl From<&AnyObject> for ObjectIdentifier {
     #[inline]
     fn from(obj: &AnyObject) -> Self {
         Self::from_obj(obj)
+    }
+}
+
+impl Type for ObjectIdentifier {
+    type Metadata = StructMetadata;
+
+    #[inline]
+    fn get_metadata() -> &'static Self::Metadata {
+        extern "C" {
+            #[link_name = "$sSON"]
+            static METADATA: StructMetadata;
+        }
+        unsafe { &METADATA }
+    }
+
+    #[inline]
+    fn get_metadata_blocking(_blocking: bool) -> Option<&'static Self::Metadata> {
+        Some(Self::get_metadata())
+    }
+
+    #[inline]
+    fn is_pod() -> bool {
+        true
+    }
+
+    #[inline]
+    fn is_bitwise_takable() -> bool {
+        true
     }
 }
 
