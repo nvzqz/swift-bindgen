@@ -23,7 +23,8 @@ pub struct TypeNamePair {
 // TODO: Support the Swift calling convention in rustc
 // See https://github.com/rust-lang/rust/pull/64582
 #[link(name = "swiftCore", kind = "dylib")]
-extern /* "Swift" */ {
+// TODO: `extern "Swift"`
+extern "C" {
     /// Fetch a uniqued metadata object for a generic nominal type.
     pub fn swift_getGenericMetadata(
         request: MetadataRequest,
