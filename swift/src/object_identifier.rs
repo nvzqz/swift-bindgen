@@ -1,6 +1,6 @@
 use swift_rt::metadata::{StructMetadata, Type};
 
-use crate::{AnyObject, Int, UInt};
+use crate::{AnyObject, Comparable, Equatable, Int, UInt};
 use std::{ffi::c_void, ptr::NonNull};
 
 /// A unique identifier for a class instance or metatype.
@@ -51,6 +51,9 @@ impl Type for ObjectIdentifier {
         true
     }
 }
+
+unsafe impl Equatable for ObjectIdentifier {}
+unsafe impl Comparable for ObjectIdentifier {}
 
 impl ObjectIdentifier {
     /// Creates an instance that uniquely identifies the given class instance.
