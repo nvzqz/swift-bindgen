@@ -21,6 +21,7 @@ pub(crate) mod util;
 
 mod any_object;
 mod array;
+mod hash;
 mod never;
 mod object_identifier;
 mod primitive;
@@ -31,6 +32,7 @@ mod ty;
 
 pub use any_object::*;
 pub use array::*;
+pub use hash::*;
 pub use never::*;
 pub use object_identifier::*;
 pub use primitive::*;
