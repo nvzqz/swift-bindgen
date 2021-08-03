@@ -23,6 +23,20 @@ impl<T> Clone for UnsafeBufferPointer<T> {
 
 impl<T> Copy for UnsafeBufferPointer<T> {}
 
+impl<T> From<&[T]> for UnsafeBufferPointer<T> {
+    #[inline]
+    fn from(slice: &[T]) -> Self {
+        Self { start: slice.as_ptr(), count: slice.len() as Int }
+    }
+}
+
+impl<T> From<&mut [T]> for UnsafeBufferPointer<T> {
+    #[inline]
+    fn from(slice: &mut [T]) -> Self {
+        (slice as &[T]).into()
+    }
+}
+
 impl<T> fmt::Debug for UnsafeBufferPointer<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("UnsafeBufferPointer")
@@ -120,6 +134,13 @@ impl<T> Clone for UnsafeMutableBufferPointer<T> {
 }
 
 impl<T> Copy for UnsafeMutableBufferPointer<T> {}
+
+impl<T> From<&mut [T]> for UnsafeMutableBufferPointer<T> {
+    #[inline]
+    fn from(slice: &mut [T]) -> Self {
+        Self { start: slice.as_mut_ptr(), count: slice.len() as Int }
+    }
+}
 
 impl<T> fmt::Debug for UnsafeMutableBufferPointer<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

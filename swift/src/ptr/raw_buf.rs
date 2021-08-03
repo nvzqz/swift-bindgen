@@ -13,6 +13,21 @@ pub struct UnsafeRawBufferPointer {
     end: *const u8,
 }
 
+impl From<&[u8]> for UnsafeRawBufferPointer {
+    #[inline]
+    fn from(bytes: &[u8]) -> Self {
+        let Range { start, end } = bytes.as_ptr_range();
+        Self { start, end }
+    }
+}
+
+impl From<&mut [u8]> for UnsafeRawBufferPointer {
+    #[inline]
+    fn from(bytes: &mut [u8]) -> Self {
+        (bytes as &[u8]).into()
+    }
+}
+
 impl fmt::Debug for UnsafeRawBufferPointer {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("UnsafeRawBufferPointer")
@@ -107,6 +122,14 @@ impl From<UnsafeRawBufferPointer> for UnsafeMutableRawBufferPointer {
             start: buf.start as *mut u8,
             end: buf.end as *mut u8,
         }
+    }
+}
+
+impl From<&mut [u8]> for UnsafeMutableRawBufferPointer {
+    #[inline]
+    fn from(bytes: &mut [u8]) -> Self {
+        let Range { start, end } = bytes.as_mut_ptr_range();
+        Self { start, end }
     }
 }
 
