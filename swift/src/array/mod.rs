@@ -194,41 +194,34 @@ impl<T> Array<T> {
         // SAFETY: `EmptyArray` has the same repr as any `Array<T>`.
         unsafe { &*(EmptyArray::empty_ref() as *const _ as *const Self) }
     }
+}
 
-    /// Calls the [`Swift.Equatable`] protocol conformance for [`Swift.Array`]
-    /// without checking if the item type `T` conforms to the protocol.
+/// Unchecked protocol operations.
+impl<T> Array<T> where T: Type {
+    /// Calls the [`Equatable`] protocol conformance for `Array` without
+    /// checking if the item type `T` conforms to the protocol.
     ///
     /// Use [`eq`](Self::eq) if `T` implements [`Equatable`].
     ///
     /// # Safety
     ///
-    /// The generic type `T` _must_ conform to [`Swift.Equatable`] to be able to
+    /// The generic type `T` _must_ conform to [`Equatable`] to be able to
     /// safely call the following `==` function:
     ///
     /// ```swift
     /// static (extension in Swift):Swift.Array<A where A: Swift.Equatable>.== infix([A], [A]) -> Swift.Bool
     /// ```
-    ///
-    /// [`Swift.Array`]: https://developer.apple.com/documentation/swift/array
-    /// [`Swift.Equatable`]: https://developer.apple.com/documentation/swift/equatable
-    #[doc(alias = "$sSasSQRzlE2eeoiySbSayxG_ABtFZ")]
-    pub unsafe fn eq_unchecked(&self, other: &Self) -> bool
-    where
-        Self: Type,
-    {
-        // TODO: Enable weak linking for crates that conditionally interop with
-        // Swift based on its existence.
+    pub unsafe fn eq_unchecked(&self, other: &Self) -> bool {
+        // TODO: Weak linking.
+        // TODO: `extern "Swift"`.
         #[link(name = "swiftCore", kind = "dylib")]
-        // TODO: `extern "Swift"`
         extern "C" {
             #[link_name = "$sSasSQRzlE2eeoiySbSayxG_ABtFZ"]
-            // #[cfg(feature = "link")]
             fn eq(a: *const c_void, b: *const c_void, metadata: *const Metadata) -> bool;
         }
 
         let metadata = Self::get_metadata().as_ref();
 
-        // TODO: Figure out where the `Self` type goes for `[T]`.
         eq(self.base.as_ptr(), other.base.as_ptr(), metadata)
     }
 
