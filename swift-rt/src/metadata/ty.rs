@@ -10,7 +10,7 @@ use swift_sys::metadata::ValueWitnessTable;
 /// Convenience metadata property methods are provided to enable avoiding
 /// runtime calls for properties known at compile-time in Rust. These could be
 /// as cheap as having values be emitted directly in the Rust binary.
-pub trait Type {
+pub trait Type: 'static {
     /// The specific runtime metadata type for `Self`.
     type Metadata: 'static + AsRef<Metadata>;
 
