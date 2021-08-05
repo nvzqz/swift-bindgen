@@ -13,9 +13,13 @@
 //! [donating directly](https://www.paypal.me/nvzqz)!
 
 #![warn(missing_docs)]
+#![cfg_attr(feature = "asm", feature(asm))]
 
 pub use swift_rt as rt;
 pub use swift_sys as sys;
+
+#[macro_use]
+mod macros;
 
 pub(crate) mod util;
 

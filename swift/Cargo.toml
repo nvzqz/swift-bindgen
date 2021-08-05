@@ -13,8 +13,12 @@ keywords = ["swift", "bindgen", "stdlib"]
 categories = ["abi-bindings", "development-tools::ffi"]
 
 [dependencies]
+cfg-if = "1"
 swift-rt = { version = "0.0.0", path = "../swift-rt" }
 swift-sys = { version = "0.0.0", path = "../swift-sys", features = ["link"] }
 
 [dev-dependencies]
 rand = "0.8"
+
+[features]
+asm = []

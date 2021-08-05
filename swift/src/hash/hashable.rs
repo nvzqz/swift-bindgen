@@ -15,12 +15,18 @@ pub unsafe trait Hashable: Equatable {
     /// given hasher.
     ///
     /// See [documentation](https://developer.apple.com/documentation/swift/hashable/2995575-hash).
+    ///
+    /// # Panics
+    ///
+    /// Implementations of this function may panic if the `asm` feature is not
+    /// enabled.
     fn hash(self, hasher: &mut Hasher);
 }
 
 mod sys {
     use super::*;
 
+    #[cfg_attr(not(feature = "asm"), allow(unused))]
     extern "C" {
         #[link_name = "$ss6HasherV8_combineyySuF"]
         pub fn combine_UInt(hasher: *mut Hasher, value: usize);
@@ -46,72 +52,152 @@ unsafe impl Hashable for ObjectIdentifier {
     }
 }
 
+#[cfg_attr(not(feature = "asm"), allow(unused))]
 unsafe impl Hashable for usize {
     #[inline]
     fn hash(self, hasher: &mut Hasher) {
-        unsafe { sys::combine_UInt(hasher, self) };
+        unsafe {
+            arch_asm! {
+                "aarch64" => {
+                    "bl {}",
+                    sym sys::combine_UInt,
+                    in("x20") hasher,
+                    in("x1") self,
+                }
+                "x86_64" => {
+                    "call {}",
+                    sym sys::combine_UInt,
+                    in("r13") hasher,
+                    in("rsi") self,
+                }
+            }
+        }
     }
 }
 
 unsafe impl Hashable for isize {
     #[inline]
     fn hash(self, hasher: &mut Hasher) {
-        unsafe { sys::combine_UInt(hasher, self as usize) };
+        (self as usize).hash(hasher);
     }
 }
 
+#[cfg_attr(not(feature = "asm"), allow(unused))]
 unsafe impl Hashable for u8 {
     #[inline]
     fn hash(self, hasher: &mut Hasher) {
-        unsafe { sys::combine_UInt8(hasher, self) };
+        unsafe {
+            arch_asm! {
+                "aarch64" => {
+                    "bl {}",
+                    sym sys::combine_UInt8,
+                    in("x20") hasher,
+                    in("x1") self,
+                }
+                "x86_64" => {
+                    "call {}",
+                    sym sys::combine_UInt8,
+                    in("r13") hasher,
+                    in("sil") self, // 8-bit rsi
+                }
+            }
+        }
     }
 }
 
 unsafe impl Hashable for i8 {
     #[inline]
     fn hash(self, hasher: &mut Hasher) {
-        unsafe { sys::combine_UInt8(hasher, self as u8) };
+        (self as u8).hash(hasher);
     }
 }
 
+#[cfg_attr(not(feature = "asm"), allow(unused))]
 unsafe impl Hashable for u16 {
     #[inline]
     fn hash(self, hasher: &mut Hasher) {
-        unsafe { sys::combine_UInt16(hasher, self) };
+        unsafe {
+            arch_asm! {
+                "aarch64" => {
+                    "bl {}",
+                    sym sys::combine_UInt16,
+                    in("x20") hasher,
+                    in("x1") self,
+                }
+                "x86_64" => {
+                    "call {}",
+                    sym sys::combine_UInt16,
+                    in("r13") hasher,
+                    in("si") self, // 16-bit rsi
+                }
+            }
+        }
     }
 }
 
 unsafe impl Hashable for i16 {
     #[inline]
     fn hash(self, hasher: &mut Hasher) {
-        unsafe { sys::combine_UInt16(hasher, self as u16) };
+        (self as u16).hash(hasher);
     }
 }
 
+#[cfg_attr(not(feature = "asm"), allow(unused))]
 unsafe impl Hashable for u32 {
     #[inline]
     fn hash(self, hasher: &mut Hasher) {
-        unsafe { sys::combine_UInt32(hasher, self) };
+        unsafe {
+            arch_asm! {
+                "aarch64" => {
+                    "bl {}",
+                    sym sys::combine_UInt32,
+                    in("x20") hasher,
+                    in("x1") self,
+                }
+                "x86_64" => {
+                    "call {}",
+                    sym sys::combine_UInt32,
+                    in("r13") hasher,
+                    in("esi") self, // 32-bit rsi
+                }
+            }
+        }
     }
 }
 
 unsafe impl Hashable for i32 {
     #[inline]
     fn hash(self, hasher: &mut Hasher) {
-        unsafe { sys::combine_UInt32(hasher, self as u32) };
+        (self as u32).hash(hasher);
     }
 }
 
+#[cfg_attr(not(feature = "asm"), allow(unused))]
 unsafe impl Hashable for u64 {
     #[inline]
     fn hash(self, hasher: &mut Hasher) {
-        unsafe { sys::combine_UInt64(hasher, self) };
+        unsafe {
+            arch_asm! {
+                "aarch64" => {
+                    "bl {}",
+                    sym sys::combine_UInt64,
+                    in("x20") hasher,
+                    in("x1") self,
+                }
+                "x86_64" => {
+                    "call {}",
+                    sym sys::combine_UInt64,
+                    in("r13") hasher,
+                    in("rsi") self,
+                }
+            }
+        }
     }
 }
 
 unsafe impl Hashable for i64 {
     #[inline]
     fn hash(self, hasher: &mut Hasher) {
-        unsafe { sys::combine_UInt64(hasher, self as u64) };
+        (self as u64).hash(hasher);
     }
 }
