@@ -197,7 +197,10 @@ impl<T> Array<T> {
 }
 
 /// Unchecked protocol operations.
-impl<T> Array<T> where T: Type {
+impl<T> Array<T>
+where
+    T: Type,
+{
     /// Calls the [`Equatable`] protocol conformance for `Array` without
     /// checking if the item type `T` conforms to the protocol.
     ///

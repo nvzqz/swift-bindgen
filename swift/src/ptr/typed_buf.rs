@@ -26,7 +26,10 @@ impl<T> Copy for UnsafeBufferPointer<T> {}
 impl<T> From<&[T]> for UnsafeBufferPointer<T> {
     #[inline]
     fn from(slice: &[T]) -> Self {
-        Self { start: slice.as_ptr(), count: slice.len() as Int }
+        Self {
+            start: slice.as_ptr(),
+            count: slice.len() as Int,
+        }
     }
 }
 
@@ -138,7 +141,10 @@ impl<T> Copy for UnsafeMutableBufferPointer<T> {}
 impl<T> From<&mut [T]> for UnsafeMutableBufferPointer<T> {
     #[inline]
     fn from(slice: &mut [T]) -> Self {
-        Self { start: slice.as_mut_ptr(), count: slice.len() as Int }
+        Self {
+            start: slice.as_mut_ptr(),
+            count: slice.len() as Int,
+        }
     }
 }
 
