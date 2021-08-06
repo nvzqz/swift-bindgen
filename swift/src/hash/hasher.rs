@@ -1,5 +1,5 @@
 use crate::{Hashable, Int, UnsafeRawBufferPointer};
-use std::mem;
+use std::mem::{self, MaybeUninit};
 
 /// The universal hash function used by [`Set`](crate::Set) and
 /// [`Dictionary`](crate::Dictionary).
@@ -154,15 +154,20 @@ impl Hasher {
     /// Implementations of this function may panic if the `asm` feature is not
     /// enabled.
     #[inline]
-    pub fn finalize(&self) -> Int {
+    pub fn finalize(self) -> Int {
         // TODO: Remove when `asm!` is stabilized.
         // See https://github.com/rust-lang/rust/issues/72016.
         #![cfg_attr(not(feature = "asm"), allow(unused, unreachable_code))]
 
         extern "C" {
             #[link_name = "$ss6HasherV8finalizeSiyF"]
-            fn finalize(hasher: *const Hasher) -> Int;
+            fn finalize(hasher: *mut Hasher) -> Int;
         }
+
+        // `finalize` consumes the `Hasher` instance; so we assume that its
+        // memory will be left uninitialized.
+        let mut hasher = MaybeUninit::new(self);
+        let hasher_ptr = hasher.as_mut_ptr();
 
         unsafe {
             let mut result: Int;
@@ -171,13 +176,13 @@ impl Hasher {
                 "aarch64" => {
                     "bl {}",
                     sym finalize,
-                    in("x20") self,
+                    in("x20") hasher_ptr,
                     out("x0") result,
                 }
                 "x86_64" => {
                     "call {}",
                     sym finalize,
-                    in("r13") self,
+                    in("r13") hasher_ptr,
                     out("rax") result,
                 }
             }
