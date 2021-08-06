@@ -131,6 +131,9 @@ impl Mangled {
 
     /// Returns the number of bytes in the symbol string.
     pub fn len(&self) -> usize {
+        // TODO: Implement `is_empty`.
+        #![allow(clippy::len_without_is_empty)]
+
         let start = self.as_ptr();
         let mut len = 0;
 

@@ -17,6 +17,7 @@
 //! [donating directly](https://www.paypal.me/nvzqz)!
 
 #![warn(missing_docs)]
+#![allow(clippy::module_inception)]
 
 pub use swift_sys as sys;
 

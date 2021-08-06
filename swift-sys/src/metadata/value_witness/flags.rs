@@ -11,6 +11,7 @@ pub struct ValueWitnessFlags {
 }
 
 #[rustfmt::skip]
+#[allow(clippy::enum_variant_names)]
 enum Bits {
     AlignmentMask =       0x000000FF,
     // unused             0x0000FF00,

@@ -13,6 +13,7 @@
 //! [donating directly](https://www.paypal.me/nvzqz)!
 
 #![warn(missing_docs)]
+#![allow(clippy::module_inception)]
 #![cfg_attr(feature = "asm", feature(asm))]
 
 pub use swift_rt as rt;

@@ -63,6 +63,9 @@ impl UnsafeRawBufferPointer {
     /// Returns the number of bytes in the buffer as an unsigned integer.
     #[inline]
     pub fn len(&self) -> usize {
+        // TODO: Implement `is_empty`.
+        #![allow(clippy::len_without_is_empty)]
+
         self.count() as usize
     }
 
@@ -168,6 +171,9 @@ impl UnsafeMutableRawBufferPointer {
     /// Returns the number of bytes in the buffer as an unsigned integer.
     #[inline]
     pub fn len(&self) -> usize {
+        // TODO: Implement `is_empty`.
+        #![allow(clippy::len_without_is_empty)]
+
         self.count() as usize
     }
 

@@ -104,6 +104,9 @@ impl<T> UnsafeBufferPointer<T> {
     /// Returns the number of elements in the buffer as an unsigned integer.
     #[inline]
     pub fn len(&self) -> usize {
+        // TODO: Implement `is_empty`.
+        #![allow(clippy::len_without_is_empty)]
+
         self.count as usize
     }
 
@@ -212,6 +215,9 @@ impl<T> UnsafeMutableBufferPointer<T> {
     /// Returns the number of elements in the buffer as an unsigned integer.
     #[inline]
     pub fn len(&self) -> usize {
+        // TODO: Implement `is_empty`.
+        #![allow(clippy::len_without_is_empty)]
+
         self.count as usize
     }
 

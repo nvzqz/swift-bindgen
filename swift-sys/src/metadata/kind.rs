@@ -36,6 +36,9 @@ impl MetadataKind {
     /// Returns new instance from `value` without checking validity.
     #[inline]
     pub const unsafe fn new_unchecked(value: u32) -> Self {
+        // TODO: Add safety doc section.
+        #![allow(clippy::missing_safety_doc)]
+
         Self(value)
     }
 
@@ -135,7 +138,7 @@ kinds! {
     is_class;
 
     /// A struct type.
-    STRUCT = 0 | NON_HEAP_FLAG;
+    STRUCT = NON_HEAP_FLAG;
 
     /// Returns `true` if `self` is a struct type.
     is_struct;
@@ -160,7 +163,7 @@ kinds! {
     is_foreign_class;
 
     /// A type whose value is not exposed in the metadata system.
-    OPAQUE = 0 | RUNTIME_PRIVATE_FLAG | NON_HEAP_FLAG;
+    OPAQUE = RUNTIME_PRIVATE_FLAG | NON_HEAP_FLAG;
 
     /// Returns `true` if `self` is a type whose value is not exposed in the
     /// metadata system.
@@ -203,14 +206,14 @@ kinds! {
     is_existential_metatype;
 
     /// A heap-allocated local variable using statically-generated metadata.
-    HEAP_LOCAL_VARIABLE = 0 | NON_TYPE_FLAG;
+    HEAP_LOCAL_VARIABLE = NON_TYPE_FLAG;
 
     /// Returns `true` if `self` is a heap-allocated local variable using
     /// statically-generated metadata.
     is_heap_local_variable;
 
     /// A heap-allocated local variable using runtime-instantiated metadata.
-    HEAP_GENERIC_LOCAL_VARIABLE = 0 | NON_TYPE_FLAG | RUNTIME_PRIVATE_FLAG;
+    HEAP_GENERIC_LOCAL_VARIABLE = NON_TYPE_FLAG | RUNTIME_PRIVATE_FLAG;
 
     /// Returns `true` if `self` is a heap-allocated local variable using
     /// runtime-instantiated metadata.

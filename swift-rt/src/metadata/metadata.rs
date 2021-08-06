@@ -279,6 +279,9 @@ impl Metadata {
 /// These methods are slightly safer than invoking the value witnesses directly
 /// because they pass the expected metadata pointer to the `self` parameter.
 impl Metadata {
+    // TODO: Add safety doc section to methods.
+    #![allow(clippy::missing_safety_doc)]
+
     /// A generic wrapper over
     /// [the value-witness function](ValueWitnessTable#structfield.initialize_buffer_with_copy_of_buffer).
     #[inline(always)]

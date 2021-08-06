@@ -76,6 +76,9 @@ impl ContextDescriptorKind {
     /// Returns new instance from `value` without checking validity.
     #[inline]
     pub const unsafe fn new_unchecked(value: u8) -> Self {
+        // TODO: Add safety doc section.
+        #![allow(clippy::missing_safety_doc)]
+
         Self(value)
     }
 

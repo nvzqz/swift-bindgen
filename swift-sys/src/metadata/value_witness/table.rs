@@ -188,6 +188,9 @@ impl ValueWitnessTable {
 ///
 /// - Simplify calling code by being able to take advantage of type inference.
 impl ValueWitnessTable {
+    // TODO: Add safety doc section to methods.
+    #![allow(clippy::missing_safety_doc)]
+
     /// A generic wrapper over
     /// [the corresponding function pointer](#structfield.initialize_buffer_with_copy_of_buffer).
     #[inline(always)]
@@ -361,6 +364,9 @@ pub struct EnumValueWitnessTable {
 ///
 /// - Simplify calling code by being able to take advantage of type inference.
 impl EnumValueWitnessTable {
+    // TODO: Add safety doc section to methods.
+    #![allow(clippy::missing_safety_doc)]
+
     /// A generic wrapper over
     /// [the corresponding function pointer](#structfield.get_enum_tag).
     #[inline(always)]

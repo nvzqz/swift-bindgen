@@ -51,6 +51,9 @@ impl ContextDescriptorFlags {
     /// Creates a new instance from `bits` without checking validity.
     #[inline]
     pub const unsafe fn from_bits(bits: u32) -> Self {
+        // TODO: Add safety doc section.
+        #![allow(clippy::missing_safety_doc)]
+
         Self(bits)
     }
 

@@ -120,6 +120,9 @@ impl EnumMetadata {
 /// These methods are slightly safer than invoking the value witnesses directly
 /// because they pass the expected metadata pointer to the `self` parameter.
 impl EnumMetadata {
+    // TODO: Add safety doc section to methods.
+    #![allow(clippy::missing_safety_doc)]
+
     /// A generic wrapper over
     /// [the corresponding function pointer](EnumValueWitnessTable#structfield.get_enum_tag).
     #[inline(always)]

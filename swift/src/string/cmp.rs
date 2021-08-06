@@ -53,6 +53,9 @@ impl PartialOrd for String {
 
     #[inline]
     fn le(&self, other: &Self) -> bool {
+        // Clippy suggests using `>=`, but that's what we're implementing here.
+        #![allow(clippy::nonminimal_bool)]
+
         !(other < self)
     }
 
@@ -63,13 +66,16 @@ impl PartialOrd for String {
 
     #[inline]
     fn ge(&self, other: &Self) -> bool {
-        !(self < other)
+        other <= self
     }
 }
 
 impl Ord for String {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
+        // Clippy suggests using `cmp`, but that's what we're implementing here.
+        #![allow(clippy::comparison_chain)]
+
         if self < other {
             Ordering::Less
         } else if self == other {
