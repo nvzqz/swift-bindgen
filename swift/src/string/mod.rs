@@ -231,10 +231,15 @@ mod tests {
             let cstr = CStr::from_bytes_with_nul(s.as_bytes()).unwrap();
             let string = String::from_cstr(cstr);
 
-            // TODO: Replace with `assert_eq!(string, s);` once `String`
-            // implements `PartialEq<str>`.
+            // TODO: Add `assert_eq!(string, s);` once `String` implements
+            // `PartialEq<str>`. Keep the method calls since they test other
+            // functionality.
+
             let expected_len = s.len() as Int - 1;
             assert_eq!(string.count(), expected_len);
+
+            let expected_empty = expected_len == 0;
+            assert_eq!(string.is_empty(), expected_empty);
         }
     }
 }
