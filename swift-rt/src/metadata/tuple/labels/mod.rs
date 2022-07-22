@@ -32,19 +32,19 @@ impl PartialEq for TupleMetadataLabels {
         }
 
         loop {
-            unsafe {
-                match (*this, *other) {
+            
+                match unsafe {(*this, *other)} {
                     (0, 0) => return true,
 
                     (a, b) if a == b => {
-                        this = this.add(1);
-                        other = other.add(1);
+                        this = unsafe {this.add(1)};
+                        other = unsafe {other.add(1)};
                     }
 
                     // This case handles either being 0.
                     _ => return false,
                 }
-            }
+            
         }
     }
 }

@@ -27,8 +27,8 @@ impl Clone for String {
     fn clone(&self) -> Self {
         let metadata = Self::get_metadata().as_metadata();
 
+        let mut clone = MaybeUninit::<Self>::uninit();
         unsafe {
-            let mut clone = MaybeUninit::<Self>::uninit();
             metadata.vw_initialize_with_copy(clone.as_mut_ptr(), self);
             clone.assume_init()
         }

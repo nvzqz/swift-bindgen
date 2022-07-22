@@ -93,13 +93,13 @@ impl AnyType {
     #[inline]
     #[doc(alias = "swift_dynamicCastMetatype")]
     pub fn as_ty(self, other: AnyType) -> Option<AnyType> {
-        unsafe {
-            let result = casting::swift_dynamicCastMetatype(
+        
+            let result = unsafe { casting::swift_dynamicCastMetatype(
                 self.metadata().as_raw(),
                 other.metadata().as_raw(),
-            );
+            ) };
             Some(AnyType(NonNull::new(result as *mut Metadata)?))
-        }
+        
     }
 
     /// Returns `true` if this type as a kind of `other`.
